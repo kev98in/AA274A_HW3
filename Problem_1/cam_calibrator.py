@@ -138,6 +138,8 @@ class CameraCalibrator:
 
         for i in range(N):
             M_tilde_T = np.array([X[i], Y[i], 1])  # 1 x 3
+            print(u_meas)
+            print(M_tilde_T)
             L[2*i:2*(i+1), :]= np.array([[M_tilde_T, np.zeros_like(M_tilde_T), -u_meas[i] * M_tilde_T],
                                         [np.zeros_like(M_tilde_T), M_tilde_T, -v_meas[i] * M_tilde_T]])
 
