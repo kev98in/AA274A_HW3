@@ -77,7 +77,7 @@ class CameraCalibrator:
                 )
 
                 plt.show(block=False)
-                plt.waitforbuttonpress()
+                # plt.waitforbuttonpress()
 
         # Useful parameters
         self.d_square = square_length  # Length of a chessboard square
@@ -133,7 +133,7 @@ class CameraCalibrator:
         HINT: Some numpy functions that might come in handy are stack, vstack, hstack, column_stack, expand_dims, zeros_like, and ones_like.
         """
         ########## Code starts here ##########
-        N = X.size() * Y.size()
+        N = X.size
         L = np.zeros((2*N, 9))
 
         for i in range(N):

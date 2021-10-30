@@ -9,7 +9,8 @@ from cam_calibrator import CameraCalibrator
 
 def main():
     cc = CameraCalibrator()
-
+    print(cc)
+    
     cal_img_path = './astra_23'  # Location of calibration images
     name = 'astra'               # Name of the camera
     n_corners = [7, 9]           # Corner grid dimensions
@@ -23,17 +24,21 @@ def main():
     #               Feel free to change this to False while developing/debugging
     n_disp_img = 23
     display_flag = True
-
+    print("load img")
     cc.loadImages(cal_img_path, name, n_corners, square_length, n_disp_img, display_flag)
-
+    print("suc loading")
     u_meas, v_meas = cc.getMeasuredPixImageCoord()
+    print("suc getMeas")
+    print(u_meas)
     X, Y = cc.genCornerCoordinates(u_meas, v_meas)
-
+    print("suc genCorner")
+    print(X)
     H = []
     for p in range(cc.n_chessboards):
         H.append(cc.estimateHomography(u_meas[p], v_meas[p], X[p], Y[p]))
 
     A = cc.getCameraIntrinsics(H)
+    print(A)
 
     R = []
     t = []
