@@ -141,8 +141,8 @@ class CameraCalibrator:
             M_tilde_T = np.hstack([np.ravel(X)[i], np.ravel(Y)[i], np.ones(1)])  # 1 x 3
             print(u_meas)
             print(M_tilde_T)
-            L[2*i:2*(i+1), :]= np.array([[M_tilde_T, np.zeros_like(M_tilde_T), -u_meas[i] * M_tilde_T],
-                                        [np.zeros_like(M_tilde_T), M_tilde_T, -v_meas[i] * M_tilde_T]])
+            L[2*i:2*(i+1), :]= np.vstack([np.hstack([M_tilde_T, np.zeros_like(M_tilde_T), -u_meas[i] * M_tilde_T]),
+                                          np.hstack([np.zeros_like(M_tilde_T), M_tilde_T, -v_meas[i] * M_tilde_T])])
 
         u, s, vh = np.linalg.svd(L)    # L: 2x9  U:2x2 s:1x9 vh: 9x9
         nonzero_idx = np.argwhere(s>0)
