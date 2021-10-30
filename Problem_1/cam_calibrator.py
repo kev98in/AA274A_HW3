@@ -150,6 +150,10 @@ class CameraCalibrator:
         x_T = vh[idx_min,:]   # 1x9
         H = np.hstack([x_T[0:3].T, x_T[3:6].T, x_T[6:9].T]) # 3x3
 
+        print("----------")
+        print("H:")
+        print(H)
+
         ########## Code ends here ##########
         return H
 
