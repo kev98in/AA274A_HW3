@@ -158,8 +158,8 @@ class CameraCalibrator:
         H[:, 1] = (x_T[0,3:6]).T
         H[:, 2] = (x_T[0,6:9]).T
 
-        print("L:")
-        print(L)
+        print("X_T")
+        print(x_T)
 
         print("----------")
         print("H:")
