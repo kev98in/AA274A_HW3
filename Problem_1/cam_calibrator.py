@@ -275,7 +275,7 @@ class CameraCalibrator:
 
         """
         ########## Code starts here ##########
-        xyz = np.vstack([np.hstack([R t]), np.hstack([np.zeros((1,3)), 1])]) @ np.vstack([X, Y, Z, 1])
+        xyz = np.vstack([np.hstack([R, t]), np.hstack([np.zeros((1,3)), 1])]) @ np.vstack([X, Y, Z, 1])
         x, y , z, tmp = xyz
         x = x / tmp
         y = y / tmp
