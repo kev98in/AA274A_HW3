@@ -198,7 +198,7 @@ class CameraCalibrator:
         V = np.empty((2 * nboard, 6))
 
         for i in range(nboard):
-            Hb = H[i]
+            Hb = H[:, i]   # column vector
             v11 = vij(Hb, 1, 1)
             v12 = vij(Hb, 1, 2)
             v22 = vij(Hb, 2, 2)
