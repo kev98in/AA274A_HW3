@@ -254,6 +254,10 @@ class CameraCalibrator:
             t: the translation vector
         """
         ########## Code starts here ##########
+        u, s, vh = np.linalg.svd(np.linalg.solve(A,H))
+        R = u @ vh
+        lam = 1/ np.linalg.norm(np.linalg.solve(A, H[:,0]))
+        t = lam @ np.linalg.solve(A, H[:,2])
 
         ########## Code ends here ##########
         return R, t

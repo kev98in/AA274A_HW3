@@ -45,6 +45,7 @@ def main():
     v0 = 220
     A = np.array([[alpha, gamma, u0], [0, beta, v0], [0, 0, 1]])
 
+    print("A: ")
     print(A)
 
     R = []
