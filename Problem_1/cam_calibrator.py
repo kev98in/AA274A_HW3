@@ -193,6 +193,8 @@ class CameraCalibrator:
             return np.array([term1, term2, term3, term4, term5, term6])
 
         V = np.empty((2 * nboard, 6))
+        print("V:")
+        print(V)
 
         for i in range(nboard):
             Hb = H[i]
