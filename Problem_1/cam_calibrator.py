@@ -151,9 +151,9 @@ class CameraCalibrator:
         print(x_T)
         print(x_T.T)  # 9x1
         H = np.empty((3,3))
-        H[:,0]  = x_T[0:3].T
-        H[:, 1] = x_T[3:6].T
-        H[:, 2] = x_T[6:9].T
+        H[:,0]  = (x_T[0:3]).T
+        H[:, 1] = (x_T[3:6]).T
+        H[:, 2] = (x_T[6:9]).T
 
         print("----------")
         print("H:")
