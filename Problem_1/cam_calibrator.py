@@ -150,6 +150,7 @@ class CameraCalibrator:
         x_T = vh[idx_min,:]   # 1x9
         print(x_T)
         print(x_T.T)  # 9x1
+        print(x_T[0:3])
         H = np.empty((3,3))
         H[:,0]  = (x_T[0:3]).T
         H[:, 1] = (x_T[3:6]).T
