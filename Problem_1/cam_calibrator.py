@@ -260,6 +260,14 @@ class CameraCalibrator:
         t = lam * np.linalg.solve(A, H[:,2])
 
         ########## Code ends here ##########
+        print("R:")
+        print(R)
+        print("Rnorm")
+        print(np.linalg.norm(R, axis=1))
+
+        print("t:")
+        print(t)
+
         return R, t
 
     def transformWorld2NormImageUndist(
