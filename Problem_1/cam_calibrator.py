@@ -258,6 +258,7 @@ class CameraCalibrator:
         R = u @ vh
         lam = 1/ np.linalg.norm(np.linalg.solve(A, H[:,0]))
         t = lam * np.linalg.solve(A, H[:,2])
+        t = t.reshape(3,1)
 
         ########## Code ends here ##########
         return R, t
@@ -275,7 +276,7 @@ class CameraCalibrator:
 
         """
         ########## Code starts here ##########
-        xyz = np.vstack([np.hstack([R, t.T]), np.hstack([np.zeros((1,3)), 1])]) @ np.vstack([X, Y, Z, np.ones_like(X)])
+        xyz = np.vstack([np.hstack([R, t]), np.hstack([np.zeros((1,3)), 1])]) @ np.vstack([X, Y, Z, np.ones_like(X)])
         x, y , z, tmp = xyz
         x = x / tmp
         y = y / tmp
