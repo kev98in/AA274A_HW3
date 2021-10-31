@@ -222,7 +222,7 @@ class CameraCalibrator:
         print("u")
         print(u)
 
-        nonzero_idx = np.argwhere(s > 0)
+        nonzero_idx = np.argwhere(s > 1e-5)
         idx_min = nonzero_idx[-1]
         b_T = vh[idx_min, :]  # 1 x 6
         print("b_T: ")
