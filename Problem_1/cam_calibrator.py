@@ -296,6 +296,8 @@ class CameraCalibrator:
             u, v: the coordinates in the ideal pixel image plane
         """
         ########## Code starts here ##########
+        print(R)
+        print(t)
 
         uv = A @ np.hstack([R, t]) @ np.vstack([X, Y, Z, np.ones_like(X)])
         u, v, tmp = uv
