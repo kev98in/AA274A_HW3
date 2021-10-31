@@ -299,6 +299,7 @@ class CameraCalibrator:
         ########## Code starts here ##########
         print(R)
         print(t)
+        print(X.shape)
 
         uv = A @ np.hstack([R, t]) @ np.vstack([X, Y, Z, np.ones_like(X)])
         u, v, tmp = uv
