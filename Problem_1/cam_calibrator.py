@@ -107,6 +107,11 @@ class CameraCalibrator:
         ########## Code starts here ##########
         Xg = []
         Yg = []
+        print("Get Corner")
+        print(self.boards)
+        print(len(self.boards))
+        i = 0
+
         for board in self.boards:
             x_array = np.arange(0, board.dim * (board.n_cols - 1), board.dim)
             y_array = np.arange(0, board.dim * (board.n_rows - 1), board.dim)
