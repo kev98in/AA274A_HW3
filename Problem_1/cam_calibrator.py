@@ -152,7 +152,7 @@ class CameraCalibrator:
         u, s, vh = np.linalg.svd(L)    # L: 2x9  U:2x2 s:1x9 vh: 9x9
         nonzero_idx = np.argwhere(s>0)
         idx_min = nonzero_idx[-1]
-        x_T = vh[:,idx_min]   # 1x9
+        x_T = vh[idx_min,:]   # 1x9
         H = np.empty((3,3))
         H[0, :]  = (x_T[0,0:3])
         H[1, :] = (x_T[0,3:6])
@@ -219,12 +219,10 @@ class CameraCalibrator:
         print(s)
         print("vh")
         print(vh)
-        print("u")
-        print(u)
 
         nonzero_idx = np.argwhere(s>0)
         idx_min = nonzero_idx[-1]
-        b_T = vh[:, idx_min]  # 1 x 6
+        b_T = vh[idx_min,:]  # 1 x 6
         print("b_T: ")
         print(b_T)
 
