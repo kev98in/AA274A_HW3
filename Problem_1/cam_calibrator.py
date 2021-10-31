@@ -153,9 +153,6 @@ class CameraCalibrator:
         nonzero_idx = np.argwhere(s>0)
         idx_min = nonzero_idx[-1]
         x_T = vh[idx_min,:]   # 1x9
-        print(x_T)
-        print(x_T.T)  # 9x1
-        print(x_T[0,0:3])
         H = np.empty((3,3))
         H[:,0]  = (x_T[0,0:3]).T
         H[:, 1] = (x_T[0,3:6]).T
@@ -210,7 +207,7 @@ class CameraCalibrator:
         idx_min = nonzero_idx[-1]
         b_T = vh[idx_min, :]  # 1 x 6
 
-        b11, b12, b22, b13, b23, b33 = b_T
+        b11, b12, b22, b13, b23, b33 = np.ravel(b_T)
 
         # From Appendix B
         v0 = (b12 * b13 - b11 * b23) / (b11 * b22 - b12 * b12)
