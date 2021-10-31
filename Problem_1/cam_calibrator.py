@@ -219,6 +219,9 @@ class CameraCalibrator:
         gamma = - b12 * alpha * alpha * beta / lam
         u0 = gamma * v0 / beta - b13 * alpha * alpha / lam
 
+        print("lam:")
+        print(lam)
+
         A = np.array([[alpha, gamma, u0], [0, beta, v0], [0, 0, 1]])
 
         ########## Code ends here ##########
