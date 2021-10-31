@@ -260,14 +260,6 @@ class CameraCalibrator:
         t = lam * np.linalg.solve(A, H[:,2])
 
         ########## Code ends here ##########
-        print("R:")
-        print(R)
-        print("Rnorm")
-        print(np.linalg.norm(R, axis=1))
-
-        print("t:")
-        print(t)
-
         return R, t
 
     def transformWorld2NormImageUndist(
@@ -283,6 +275,10 @@ class CameraCalibrator:
 
         """
         ########## Code starts here ##########
+        xyz = np.vstack([np.hstack([R t]), np.hstack([np.zeros((1,3)), 1])]) @ np.vstack([X, Y, Z, 1])
+        x, y , z, tmp = xyz
+        x = x / tmp
+        y = y / tmp
 
         ########## Code ends here ##########
         return x, y
@@ -300,6 +296,12 @@ class CameraCalibrator:
             u, v: the coordinates in the ideal pixel image plane
         """
         ########## Code starts here ##########
+
+        uv = A @ np.hstack([R, t]) @ np.vstack([X, Y, Z, 1])
+        u, v, tmp = uv
+
+        u = u / tmp
+        v = v / tmp
 
         ########## Code ends here ##########
         return u, v
