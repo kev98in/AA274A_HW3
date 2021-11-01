@@ -77,7 +77,7 @@ class CameraCalibrator:
                 )
 
                 plt.show(block=False)
-                plt.waitforbuttonpress()
+                # plt.waitforbuttonpress()
 
         # Useful parameters
         self.d_square = square_length  # Length of a chessboard square
@@ -116,6 +116,16 @@ class CameraCalibrator:
             x_array = np.arange(0, self.d_square * (self.n_corners_x - 1), self.d_square)
             y_array = np.arange(0, self.d_square * (self.n_corners_y - 1), self.d_square)
             x_mesh, y_mesh = np.meshgrid(x_array, y_array)
+
+            print("n_corners")
+            print(self.n_corners_x, self.n_corners_y)
+
+            print("x_mesh")
+            print(x_mesh.shape)
+            print(x_mesh)
+
+            raise ValueError
+
             Xg.append(x_mesh)
             Yg.append(y_mesh)
 
