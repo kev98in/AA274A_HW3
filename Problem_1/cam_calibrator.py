@@ -235,7 +235,7 @@ class CameraCalibrator:
 
         # Check that h_iT B h_j = v_ijT b
         Bmat = np.array([[b11, b12, b13], [b12, b22, b23], [b13, b23, b33]])
-        leftside = H[:, 0].T @ Bmat @ H[:, 0]
+        leftside = H[0][:, 0].T @ Bmat @ H[0][:, 0]
         rightside = v(H[0], 1, 1) @ b_T.T
         print("Check h_iT B h_j = v_ijT b")
         print(leftside)
