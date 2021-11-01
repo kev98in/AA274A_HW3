@@ -144,8 +144,8 @@ class CameraCalibrator:
 
         for i in range(N):
             M_tilde_T = np.hstack([np.ravel(X)[i], np.ravel(Y)[i], np.ones(1)])  # 1 x 3
-            print(u_meas)
-            print(M_tilde_T)
+            # print(u_meas)
+            # print(M_tilde_T)
             L[2*i:2*(i+1), :] = np.vstack([np.hstack([M_tilde_T, np.zeros_like(M_tilde_T), -u_meas[i] * M_tilde_T]),
                                           np.hstack([np.zeros_like(M_tilde_T), M_tilde_T, -v_meas[i] * M_tilde_T])])
 
@@ -236,11 +236,13 @@ class CameraCalibrator:
         # Check that h_iT B h_j = v_ijT b
         Bmat = np.array([[b11, b12, b13], [b12, b22, b23], [b13, b23, b33]])
         leftside = H[:, 0].T @ Bmat @ H[:, 0]
-        rightside = v(H[0], 1, 1).T @ b_T.T
+        rightside = v(H[0], 1, 1) @ b_T.T
         print("Check h_iT B h_j = v_ijT b")
         print(leftside)
         print(rightside)
         print(leftside - rightside)
+
+        raise ValueError
 
         # From Appendix B
         v0 = (b12 * b13 - b11 * b23) / (b11 * b22 - b12 * b12)
