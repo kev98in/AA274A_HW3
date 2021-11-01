@@ -35,7 +35,7 @@ def main():
     print(u_meas[0].shape)
     X, Y = cc.genCornerCoordinates(u_meas, v_meas)
     print("suc genCorner")
-    print(X)
+    # print(X)
     H = []
     for p in range(cc.n_chessboards):
         H.append(cc.estimateHomography(u_meas[p], v_meas[p], X[p], Y[p]))
