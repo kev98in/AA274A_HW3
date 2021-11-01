@@ -108,9 +108,9 @@ class CameraCalibrator:
         ########## Code starts here ##########
         Xg = []
         Yg = []
-        print("Get Corner")
-        print(self.boards)
-        print(len(self.boards))
+        # print("Get Corner")
+        # print(self.boards)
+        # print(len(self.boards))
 
         for p in range(self.n_chessboards):
             x_array = np.array(range(self.n_corners_x)) * self.d_square
@@ -158,7 +158,7 @@ class CameraCalibrator:
         ########## Code starts here ##########
         N = X.size
         L = np.zeros((2*N, 9))
-        print(X.shape)
+        # print(X.shape)
 
         for i in range(N):
             M_tilde_T = np.hstack([np.ravel(X)[i], np.ravel(Y)[i], np.ones(1)])  # 1 x 3
@@ -178,17 +178,17 @@ class CameraCalibrator:
 
         H = x_T.reshape((3, 3))
 
-        print("L shape")
-        print(L.shape)
-        print("Check = 0")
-        print(L @ x_T.T)  # (2 x 9) * (9 x 1) = (2 x 1)
-
-        print("X_T")
-        print(x_T)
-
-        print("----------")
-        print("H:")
-        print(H)
+        # print("L shape")
+        # print(L.shape)
+        # print("Check = 0")
+        # print(L @ x_T.T)  # (2 x 9) * (9 x 1) = (2 x 1)
+        #
+        # print("X_T")
+        # print(x_T)
+        #
+        # print("----------")
+        # print("H:")
+        # print(H)
 
         ########## Code ends here ##########
         return H
@@ -230,8 +230,8 @@ class CameraCalibrator:
 
             vtemp = np.vstack([v12, (v11 - v22)])
 
-            print("vtemp")
-            print(vtemp)
+            # print("vtemp")
+            # print(vtemp)
 
             V[2*i:2*(i+1), :] = vtemp
 
@@ -240,21 +240,21 @@ class CameraCalibrator:
 
         u, s, vh = np.linalg.svd(V)
 
-        print("S")
-        print(s)
-        print("vh")
-        print(vh)
+        # print("S")
+        # print(s)
+        # print("vh")
+        # print(vh)
 
         nonzero_idx = np.argwhere(s > 0)
         idx_min = nonzero_idx[-1]
         b_T = vh[idx_min, :]  # 1 x 6
-        print("b_T: ")
-        print(b_T)
+        # print("b_T: ")
+        # print(b_T)
 
         b11, b12, b22, b13, b23, b33 = np.ravel(b_T)
 
-        print("bs")
-        print(b11, b12, b22, b13, b23, b33)
+        # print("bs")
+        # print(b11, b12, b22, b13, b23, b33)
 
         # # Check that h_iT B h_j = v_ijT b
         # Bmat = np.array([[b11, b12, b13], [b12, b22, b23], [b13, b23, b33]])
@@ -279,12 +279,12 @@ class CameraCalibrator:
         gamma = - b12 * alpha * alpha * beta / lam
         u0 = gamma * v0 / beta - b13 * alpha * alpha / lam
 
-        print("lam:")
-        print(lam)
+        # print("lam:")
+        # print(lam)
 
         A = np.array([[alpha, gamma, u0], [0, beta, v0], [0, 0, 1]])
 
-        print(A)
+        # print(A)
 
         # raise ValueError
 
@@ -352,9 +352,9 @@ class CameraCalibrator:
             u, v: the coordinates in the ideal pixel image plane
         """
         ########## Code starts here ##########
-        print(R)
-        print(t)
-        print(X.shape)
+        # print(R)
+        # print(t)
+        # print(X.shape)
 
         uv = A @ np.hstack([R, t]) @ np.vstack([np.ravel(X), np.ravel(Y), np.ravel(Z), np.ones_like(np.ravel(X))])
         u, v, tmp = uv
