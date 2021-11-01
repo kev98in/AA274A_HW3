@@ -263,6 +263,8 @@ class CameraCalibrator:
 
         A = np.array([[alpha, gamma, u0], [0, beta, v0], [0, 0, 1]])
 
+        print(A)
+
         raise ValueError
 
         ########## Code ends here ##########
