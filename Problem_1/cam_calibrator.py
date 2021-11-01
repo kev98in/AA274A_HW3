@@ -225,13 +225,22 @@ class CameraCalibrator:
         print("vh")
         print(vh)
 
-        nonzero_idx = np.argwhere(s>0)
+        nonzero_idx = np.argwhere(s > 0)
         idx_min = nonzero_idx[-1]
-        b_T = vh[idx_min,:]  # 1 x 6
+        b_T = vh[idx_min, :]  # 1 x 6
         print("b_T: ")
         print(b_T)
 
         b11, b12, b22, b13, b23, b33 = np.ravel(b_T)
+
+        # Check that h_iT B h_j = v_ijT b
+        Bmat = np.array([[b11, b12, b13], [b12, b22, b23], [b13, b23, b33]])
+        leftside = H[:, 0].T @ Bmat @ H[:, 0]
+        rightside = v(H[0], 1, 1).T @ b_T.T
+        print("Check h_iT B h_j = v_ijT b")
+        print(leftside)
+        print(rightside)
+        print(leftside - rightside)
 
         # From Appendix B
         v0 = (b12 * b13 - b11 * b23) / (b11 * b22 - b12 * b12)
