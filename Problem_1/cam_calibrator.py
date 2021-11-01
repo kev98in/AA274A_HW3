@@ -172,8 +172,6 @@ class CameraCalibrator:
         print("H:")
         print(H)
 
-        raise ValueError
-
         ########## Code ends here ##########
         return H
 
@@ -264,6 +262,8 @@ class CameraCalibrator:
         print(lam)
 
         A = np.array([[alpha, gamma, u0], [0, beta, v0], [0, 0, 1]])
+
+        raise ValueError
 
         ########## Code ends here ##########
         return A
