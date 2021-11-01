@@ -517,6 +517,10 @@ class CameraCalibrator:
             for i in range(4):
                 print("W")
                 print(W)
+
+                print("np.array([X[p][ind_corners[i]], Y[p][ind_corners[i]], 0, 1]")
+                print(np.array([X[p][ind_corners[i]], Y[p][ind_corners[i]], 0, 1]))
+
                 M_tld = W.dot(
                     np.array([X[p][ind_corners[i]], Y[p][ind_corners[i]], 0, 1])
                 )
