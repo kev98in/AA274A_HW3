@@ -170,6 +170,8 @@ class CameraCalibrator:
         print("H:")
         print(H)
 
+        raise ValueError
+
         ########## Code ends here ##########
         return H
 
@@ -233,20 +235,20 @@ class CameraCalibrator:
 
         b11, b12, b22, b13, b23, b33 = np.ravel(b_T)
 
-        # Check that h_iT B h_j = v_ijT b
-        Bmat = np.array([[b11, b12, b13], [b12, b22, b23], [b13, b23, b33]])
-
-        for i in range(nboard):
-            leftside = H[i][:, 0].T @ Bmat @ H[i][:, 0]
-            # print(vij(H[0], 1, 1).shape)
-            # print(b_T.T.shape)
-            rightside = vij(H[i], 1, 1) @ b_T.T
-            print("Check h_iT B h_j = v_ijT b")
-            # print(leftside)
-            # print(rightside)
-            print(leftside - rightside)
-
-        raise ValueError
+        # # Check that h_iT B h_j = v_ijT b
+        # Bmat = np.array([[b11, b12, b13], [b12, b22, b23], [b13, b23, b33]])
+        #
+        # for i in range(nboard):
+        #     leftside = H[i][:, 0].T @ Bmat @ H[i][:, 0]
+        #     # print(vij(H[0], 1, 1).shape)
+        #     # print(b_T.T.shape)
+        #     rightside = vij(H[i], 1, 1) @ b_T.T
+        #     print("Check h_iT B h_j = v_ijT b")
+        #     # print(leftside)
+        #     # print(rightside)
+        #     print(leftside - rightside)
+        #
+        # raise ValueError
 
         # From Appendix B
         v0 = (b12 * b13 - b11 * b23) / (b11 * b22 - b12 * b12)
