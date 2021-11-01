@@ -37,13 +37,13 @@ def main():
     for p in range(cc.n_chessboards):
         H.append(cc.estimateHomography(u_meas[p], v_meas[p], X[p], Y[p]))
 
-    # A = cc.getCameraIntrinsics(H)
-    alpha = 877
-    gamma = 0.175
-    u0 = 301
-    beta = 876
-    v0 = 220
-    A = np.array([[alpha, gamma, u0], [0, beta, v0], [0, 0, 1]])
+    A = cc.getCameraIntrinsics(H)
+    # alpha = 877
+    # gamma = 0.175
+    # u0 = 301
+    # beta = 876
+    # v0 = 220
+    # A = np.array([[alpha, gamma, u0], [0, beta, v0], [0, 0, 1]])
 
     print("A: ")
     print(A)
