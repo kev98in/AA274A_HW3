@@ -520,9 +520,11 @@ class CameraCalibrator:
 
                 print("np.array([X[p][ind_corners[i]], Y[p][ind_corners[i]], 0, 1]")
                 print(np.array([X[p][ind_corners[i]], Y[p][ind_corners[i]], 0, 1]))
+                print(np.array([[X[p][ind_corners[i]]], [Y[p][ind_corners[i]]], np.zeros_like(Y[p][ind_corners[i]]), np.ones_like(Y[p][ind_corners[i]])]).shape)
 
                 M_tld = W.dot(
-                    np.array([X[p][ind_corners[i]], Y[p][ind_corners[i]], 0, 1])
+                    # np.array([X[p][ind_corners[i]], Y[p][ind_corners[i]], 0, 1])
+                    np.array([[X[p][ind_corners[i]]], [Y[p][ind_corners[i]]], np.zeros_like(Y[p][ind_corners[i]]), np.ones_like(Y[p][ind_corners[i]])])
                 )
                 print("M_tld shape")
                 print(M_tld.shape)
