@@ -520,6 +520,8 @@ class CameraCalibrator:
                 )
                 print("M_tld")
                 print(M_tld.shape)
+                print(M_tld[2])
+                print(np.sign(M_tld[2]))
                 if np.sign(M_tld[2]) == 1:
                     Rz = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, 1]])
                     M_tld = Rz.dot(M_tld)
