@@ -134,8 +134,8 @@ class CameraCalibrator:
 
             # raise ValueError
 
-            Xg.append(x_mesh)
-            Yg.append(y_mesh)
+            Xg.append(x_mesh.flatten())
+            Yg.append(y_mesh.flatten())
 
         corner_coordinates = (Xg, Yg)
         ########## Code ends here ##########
@@ -521,9 +521,9 @@ class CameraCalibrator:
                 print("np.array([X[p][ind_corners[i]], Y[p][ind_corners[i]], 0, 1]")
                 # print(np.array([X[p][ind_corners[i]], Y[p][ind_corners[i]], 0, 1]))
                 # print("X=",X)
-                print("ind_corners=",len(ind_corners))
-                print("X[p]=",X[p].shape)
-                print("X[p][ind_corners[i]]=",X[p][ind_corners[i]].shape)
+                print("ind_corners=", len(ind_corners))
+                print("X[p]=", X[p].shape)
+                print("X[p][ind_corners[i]]=", X[p][ind_corners[i]].shape)
                 new_vec = np.hstack([X[p][ind_corners[i]][:, np.newaxis],
                                      Y[p][ind_corners[i]][:, np.newaxis],
                                      np.zeros_like(Y[p][ind_corners[i]])[:, np.newaxis],
@@ -544,6 +544,7 @@ class CameraCalibrator:
                 print(M_tld[2])
                 print("sign")
                 print(np.sign(M_tld[2]))
+
                 if np.sign(M_tld[2]) == 1:
                     Rz = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, 1]])
                     M_tld = Rz.dot(M_tld)
