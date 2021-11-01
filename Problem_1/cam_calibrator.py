@@ -116,23 +116,23 @@ class CameraCalibrator:
             x_array = np.array(range(self.n_corners_x)) * self.d_square
             y_array = np.array(range(self.n_corners_y)) * self.d_square
 
-            print("xarray")
-            print(x_array.shape)
-            print(x_array)
+            # print("xarray")
+            # print(x_array.shape)
+            # print(x_array)
 
             x_mesh, y_mesh = np.meshgrid(x_array, y_array)
 
-            print("n_corners")
-            print(self.n_corners_x, self.n_corners_y)
+            # print("n_corners")
+            # print(self.n_corners_x, self.n_corners_y)
+            #
+            # print("dsquare")
+            # print(self.d_square)
+            #
+            # print("x_mesh")
+            # print(x_mesh.shape)
+            # print(x_mesh)
 
-            print("dsquare")
-            print(self.d_square)
-
-            print("x_mesh")
-            print(x_mesh.shape)
-            print(x_mesh)
-
-            raise ValueError
+            # raise ValueError
 
             Xg.append(x_mesh)
             Yg.append(y_mesh)
