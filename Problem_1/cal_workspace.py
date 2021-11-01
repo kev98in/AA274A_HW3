@@ -40,17 +40,20 @@ def main():
     for p in range(cc.n_chessboards):
         H.append(cc.estimateHomography(u_meas[p], v_meas[p], X[p], Y[p]))
 
+    print("success in estimateHomography")
     A = cc.getCameraIntrinsics(H)
-
+    print("success in getCameraIntrinsics")
     print("A: ")
     print(A)
 
     R = []
     t = []
     for p in range(cc.n_chessboards):
-        Rout, tout = cc.getExtrinsics(H[p],A)
+        Rout, tout = cc.getExtrinsics(H[p], A)
         R.append(Rout)
         t.append(tout)
+
+    print("success in getCameraExtrinsics")
 
     cc.plotBoardPixImages(u_meas, v_meas, X, Y, R, t, A, n_disp_img)
 
