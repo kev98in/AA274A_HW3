@@ -153,10 +153,12 @@ class CameraCalibrator:
         nonzero_idx = np.argwhere(s > 0)
         idx_min = nonzero_idx[-1]
         x_T = vh[idx_min, :]   # 1x9
-        H = np.empty((3, 3))
-        H[0, :] = (x_T[0, 0:3])
-        H[1, :] = (x_T[0, 3:6])
-        H[2, :] = (x_T[0, 6:9])
+        # H = np.empty((3, 3))
+        # H[0, :] = (x_T[0, 0:3])
+        # H[1, :] = (x_T[0, 3:6])
+        # H[2, :] = (x_T[0, 6:9])
+
+        H = x_T.reshape((3, 3))
 
         print("L shape")
         print(L.shape)
