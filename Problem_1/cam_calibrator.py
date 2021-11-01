@@ -97,7 +97,8 @@ class CameraCalibrator:
             u_meas: a list of arrays where each array are the u values for each board.
             v_meas: a list of arrays where each array are the v values for each board.
         Output:
-            corner_coordinates: a tuple (Xg, Yg) where Xg/Yg is a list of arrays where each array are the x/y values for each board.
+            corner_coordinates: a tuple (Xg, Yg) where Xg/Yg is a list of arrays where each array are the x/y values
+            for each board.
 
         HINT: u_meas, v_meas starts at the blue end, and finishes with the pink end
         HINT: our solution does not use the u_meas and v_meas values
@@ -110,12 +111,11 @@ class CameraCalibrator:
         print("Get Corner")
         print(self.boards)
         print(len(self.boards))
-        i = 0
 
         for p in range(self.n_chessboards):
-            x_array = np.arange(0, self.d_square * (self.n_corners_x - 1), self.d_square)
-            y_array = np.arange(0, self.d_square * (self.n_corners_y - 1), self.d_square)
-            y_mesh, x_mesh = np.meshgrid(y_array, x_array)
+            x_array = np.arange(0, self.d_square * self.n_corners_x, self.d_square)
+            y_array = np.arange(0, self.d_square * self.n_corners_y, self.d_square)
+            x_mesh, y_mesh = np.meshgrid(x_array, y_array)
             Xg.append(x_mesh)
             Yg.append(y_mesh)
 
