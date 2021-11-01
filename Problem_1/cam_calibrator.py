@@ -191,7 +191,7 @@ class CameraCalibrator:
         nboard = len(H)
 
         def v(h, arg1, arg2):
-            return h[arg2-1, arg1-1]
+            return h[arg1-1, arg2-1]
 
         def vij(h, i, j):
             term1 = v(h, i, 1) * v(h, j, 1)
@@ -217,8 +217,8 @@ class CameraCalibrator:
 
             V[2*i:2*(i+1), :] = vtemp
 
-        print("V:")
-        print(V)
+        # print("V:")
+        # print(V)
 
         u, s, vh = np.linalg.svd(V)
 
