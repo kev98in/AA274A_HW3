@@ -161,7 +161,7 @@ class CameraCalibrator:
         print("L shape")
         print(L.shape)
         print("Check = 0")
-        print(L[:2, :] @ x_T.T)  # (2 x 9) * (9 x 1) = (2 x 1)
+        print(L @ x_T.T)  # (2 x 9) * (9 x 1) = (2 x 1)
 
         print("X_T")
         print(x_T)
