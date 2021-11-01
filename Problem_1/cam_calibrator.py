@@ -235,6 +235,9 @@ class CameraCalibrator:
 
         b11, b12, b22, b13, b23, b33 = np.ravel(b_T)
 
+        print("bs")
+        print(b11, b12, b22, b13, b23, b33)
+
         # # Check that h_iT B h_j = v_ijT b
         # Bmat = np.array([[b11, b12, b13], [b12, b22, b23], [b13, b23, b33]])
         #
