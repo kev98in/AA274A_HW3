@@ -26,27 +26,21 @@ def main():
     display_flag = True
     print("load img")
     cc.loadImages(cal_img_path, name, n_corners, square_length, n_disp_img, display_flag)
-    print("suc loading")
+    print("success in loading")
     u_meas, v_meas = cc.getMeasuredPixImageCoord()
-    print("suc getMeas")
-    print("u_meas length")
-    print(len(u_meas))
-    print("u_meas[0] shape")
-    print(u_meas[0].shape)
+    print("success in getMeasuredPixImageCoord")
+    # print("u_meas length")
+    # print(len(u_meas))
+    # print("u_meas[0] shape")
+    # print(u_meas[0].shape)
     X, Y = cc.genCornerCoordinates(u_meas, v_meas)
-    print("suc genCorner")
+    print("success in genCornerCoordinates")
     # print(X)
     H = []
     for p in range(cc.n_chessboards):
         H.append(cc.estimateHomography(u_meas[p], v_meas[p], X[p], Y[p]))
 
     A = cc.getCameraIntrinsics(H)
-    # alpha = 877
-    # gamma = 0.175
-    # u0 = 301
-    # beta = 876
-    # v0 = 220
-    # A = np.array([[alpha, gamma, u0], [0, beta, v0], [0, 0, 1]])
 
     print("A: ")
     print(A)

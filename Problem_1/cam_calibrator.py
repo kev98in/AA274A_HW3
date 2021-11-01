@@ -77,7 +77,7 @@ class CameraCalibrator:
                 )
 
                 plt.show(block=False)
-                # plt.waitforbuttonpress()
+                plt.waitforbuttonpress()
 
         # Useful parameters
         self.d_square = square_length  # Length of a chessboard square
