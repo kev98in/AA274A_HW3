@@ -520,8 +520,8 @@ class CameraCalibrator:
 
                 print("np.array([X[p][ind_corners[i]], Y[p][ind_corners[i]], 0, 1]")
                 # print(np.array([X[p][ind_corners[i]], Y[p][ind_corners[i]], 0, 1]))
-                print("X=",X)
-                print("ind_corners=",ind_corners.shape)
+                # print("X=",X)
+                print("ind_corners=",len(ind_corners))
                 print("X[p]=",X[p].shape)
                 print("X[p][ind_corners[i]]=",X[p][ind_corners[i]].shape)
                 new_vec = np.hstack([X[p][ind_corners[i]][:, np.newaxis],
