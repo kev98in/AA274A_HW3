@@ -113,8 +113,8 @@ class CameraCalibrator:
         print(len(self.boards))
 
         for p in range(self.n_chessboards):
-            x_array = np.arange(0, self.d_square * self.n_corners_x, self.d_square)
-            y_array = np.arange(0, self.d_square * self.n_corners_y, self.d_square)
+            x_array = np.array(range(self.n_corners_x)) * self.d_square
+            y_array = np.array(range(self.n_corners_y)) * self.d_square
             x_mesh, y_mesh = np.meshgrid(x_array, y_array)
 
             print("n_corners")
