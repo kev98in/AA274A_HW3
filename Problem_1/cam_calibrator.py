@@ -349,9 +349,9 @@ class CameraCalibrator:
 
         print("xyz shape")
         print(xyz.shape)
-        x, y, z, tmp = xyz
-        x = x / tmp
-        y = y / tmp
+        x, y, z = xyz
+        x = x / z
+        y = y / z
 
         ########## Code ends here ##########
         return x, y
@@ -380,8 +380,11 @@ class CameraCalibrator:
         # u = u / tmp
         # v = v / tmp
         xy = self.transformWorld2NormImageUndist(X, Y, Z, R, t)
-        uv = A @ xy
-        u, v, tmp = uv
+        x, y = xy
+        uvt = A @ np.vstack([x, y, np.ones_like(x)])
+        u, v, tmp = uvt
+        u = u / tmp
+        v = v / tmp
 
         ########## Code ends here ##########
         return u, v
