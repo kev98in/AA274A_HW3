@@ -313,7 +313,7 @@ class CameraCalibrator:
         R = u @ vh
 
         t = lam * np.linalg.solve(A, H[:, 2])
-        t = t.reshape(3, 1)
+        t = t.reshape(3,)
 
         ########## Code ends here ##########
         return R, t
@@ -331,8 +331,21 @@ class CameraCalibrator:
 
         """
         ########## Code starts here ##########
-        xyz = np.vstack([np.hstack([R, t]), np.hstack([np.zeros((1,3)), 1])]) @ np.vstack([X, Y, Z, np.ones_like(X)])
-        x, y , z, tmp = xyz
+        # Stacking the following:
+        # [R t] [X; Y; Z; 1]
+        t_reshaped = t.reshape(3, 1)
+
+        print("try hstack")
+        print(np.hstack([R, t_reshaped]))
+
+        print("First matrix")
+        print(np.vstack([np.hstack([R, t_reshaped]), np.hstack([np.zeros((1, 3)), 1])]))
+
+        print("Right Vec")
+        print(np.vstack([X, Y, Z, np.ones_like(X)]))
+
+        xyz = np.vstack([np.hstack([R, t_reshaped]), np.hstack([np.zeros((1, 3)), 1])]) @ np.vstack([X, Y, Z, np.ones_like(X)])
+        x, y, z, tmp = xyz
         x = x / tmp
         y = y / tmp
 
@@ -355,12 +368,16 @@ class CameraCalibrator:
         # print(R)
         # print(t)
         # print(X.shape)
-
-        uv = A @ np.hstack([R, t]) @ np.vstack([np.ravel(X), np.ravel(Y), np.ravel(Z), np.ones_like(np.ravel(X))])
+        # A [R t] [X; Y; Z; 1]
+        # t_reshaped = t.reshape(3, 1)
+        # uv = A @ np.hstack([R, t_reshaped]) @ np.vstack([np.ravel(X), np.ravel(Y), np.ravel(Z), np.ones_like(np.ravel(X))])
+        # u, v, tmp = uv
+        #
+        # u = u / tmp
+        # v = v / tmp
+        xy = self.transformWorld2NormImageUndist(X, Y, Z, R, t)
+        uv = A @ xy
         u, v, tmp = uv
-
-        u = u / tmp
-        v = v / tmp
 
         ########## Code ends here ##########
         return u, v
