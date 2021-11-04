@@ -537,12 +537,11 @@ class CameraCalibrator:
         for p in range(self.n_chessboards):
 
             M = []
-            W = np.hstack((R[p], t[p]))
+            W = np.column_stack((R[p], t[p]))
             for i in range(4):
                 M_tld = W.dot(
                     np.array([X[p][ind_corners[i]], Y[p][ind_corners[i]], 0, 1])
                 )
-
                 if np.sign(M_tld[2]) == 1:
                     Rz = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, 1]])
                     M_tld = Rz.dot(M_tld)
