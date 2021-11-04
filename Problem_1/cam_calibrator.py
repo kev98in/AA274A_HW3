@@ -335,20 +335,19 @@ class CameraCalibrator:
         # [R t] [X; Y; Z; 1]
         t_reshaped = t.reshape(3, 1)
 
-        print("try hstack")
-        print(np.hstack([R, t_reshaped]).shape)
+        # print("try hstack")
+        # print(np.hstack([R, t_reshaped]).shape)
 
         # print("First matrix")
         # print(np.vstack([np.hstack([R, t_reshaped]), np.hstack([np.zeros((1, 3)), 1])]))
 
-        print("Right Vec")
-        print(np.vstack([X, Y, Z, np.ones_like(X)]).shape)
+        # print("Right Vec")
+        # print(np.vstack([X, Y, Z, np.ones_like(X)]).shape)
 
-        # xyz = np.vstack([np.hstack([R, t_reshaped]), np.hstack([np.zeros((1, 3)), 1])]) @ np.vstack([X, Y, Z, np.ones_like(X)])
         xyz = np.hstack([R, t_reshaped]) @ np.vstack([X, Y, Z, np.ones_like(X)])
 
-        print("xyz shape")
-        print(xyz.shape)
+        # print("xyz shape")
+        # print(xyz.shape)
         x, y, z = xyz
         x = x / z
         y = y / z
