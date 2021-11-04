@@ -338,13 +338,14 @@ class CameraCalibrator:
         print("try hstack")
         print(np.hstack([R, t_reshaped]))
 
-        print("First matrix")
-        print(np.vstack([np.hstack([R, t_reshaped]), np.hstack([np.zeros((1, 3)), 1])]))
+        # print("First matrix")
+        # print(np.vstack([np.hstack([R, t_reshaped]), np.hstack([np.zeros((1, 3)), 1])]))
 
         print("Right Vec")
         print(np.vstack([X, Y, Z, np.ones_like(X)]))
 
-        xyz = np.vstack([np.hstack([R, t_reshaped]), np.hstack([np.zeros((1, 3)), 1])]) @ np.vstack([X, Y, Z, np.ones_like(X)])
+        # xyz = np.vstack([np.hstack([R, t_reshaped]), np.hstack([np.zeros((1, 3)), 1])]) @ np.vstack([X, Y, Z, np.ones_like(X)])
+        xyz = np.hstack([R, t_reshaped]) @ np.vstack([X, Y, Z, np.ones_like(X)])
         x, y, z, tmp = xyz
         x = x / tmp
         y = y / tmp
