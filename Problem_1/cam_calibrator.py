@@ -334,20 +334,8 @@ class CameraCalibrator:
         # Stacking the following:
         # [R t] [X; Y; Z; 1]
         t_reshaped = t.reshape(3, 1)
-
-        # print("try hstack")
-        # print(np.hstack([R, t_reshaped]).shape)
-
-        # print("First matrix")
-        # print(np.vstack([np.hstack([R, t_reshaped]), np.hstack([np.zeros((1, 3)), 1])]))
-
-        # print("Right Vec")
-        # print(np.vstack([X, Y, Z, np.ones_like(X)]).shape)
-
         xyz = np.hstack([R, t_reshaped]) @ np.vstack([X, Y, Z, np.ones_like(X)])
 
-        # print("xyz shape")
-        # print(xyz.shape)
         x, y, z = xyz
         x = x / z
         y = y / z
@@ -368,16 +356,8 @@ class CameraCalibrator:
             u, v: the coordinates in the ideal pixel image plane
         """
         ########## Code starts here ##########
-        # print(R)
-        # print(t)
-        # print(X.shape)
+
         # A [R t] [X; Y; Z; 1]
-        # t_reshaped = t.reshape(3, 1)
-        # uv = A @ np.hstack([R, t_reshaped]) @ np.vstack([np.ravel(X), np.ravel(Y), np.ravel(Z), np.ones_like(np.ravel(X))])
-        # u, v, tmp = uv
-        #
-        # u = u / tmp
-        # v = v / tmp
         xy = self.transformWorld2NormImageUndist(X, Y, Z, R, t)
         x, y = xy
         uvt = A @ np.vstack([x, y, np.ones_like(x)])
