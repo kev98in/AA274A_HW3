@@ -26,32 +26,35 @@ def compute_dynamics(xvec, u, dt, compute_jacobians=True):
     theta_0 = xvec[2]
     theta = xvec[2] + u[1] * dt
 
-    if om > EPSILON_OMEGA:
+    if abs(om) > EPSILON_OMEGA:
         x = xvec[0] + V / om * (np.sin(theta) - np.sin(theta_0))
         y = xvec[1] + V / om * (-np.cos(theta) + np.cos(theta_0))
 
-        Gx = np.array([1, 0, V / om * (np.cos(theta_0 + om * dt) - np.cos(theta_0))],
+        Gx = np.array([[1, 0, V / om * (np.cos(theta_0 + om * dt) - np.cos(theta_0))],
                       [0, 1, V / om * (np.sin(theta_0 + om * dt) - np.sin(theta_0))],
-                      [0, 0, 1]
+                      [0, 0, 1]]
                       )
-        Gu = np.array([1/om * (np.sin(theta) - np.sin(theta_0)), V/om * (dt * np.cos(theta) + 1/om * (np.sin(theta_0) - np.sin(theta)))],
-                      [1/om * (np.cos(theta_0) - np.cos(theta)),  V/om * (dt * np.sin(theta) + 1/om * np.cos(theta) - np.cos(theta_0))],
-                      [0, dt])
+        Gu = np.array([[1/om * (np.sin(theta) - np.sin(theta_0)), V/om * (dt * np.cos(theta) + 1/om * (np.sin(theta_0) - np.sin(theta)))],
+                      [1/om * (np.cos(theta_0) - np.cos(theta)),  V/om * (dt * np.sin(theta) + 1/om * (np.cos(theta) - np.cos(theta_0)))],
+                      [0, dt]])
 
     else:
         x = xvec[0] + V * np.cos(theta_0) * dt
         y = xvec[1] + V * np.sin(theta_0) * dt
 
         # lim (d/dt) = d/dt (lim )
-        Gx = np.array([1, 0, - V * np.sin(theta_0) * dt],
+        Gx = np.array([[1, 0, - V * np.sin(theta_0) * dt],
                       [0, 1, V * np.cos(theta_0) * dt],
-                      [0, 0, 1]
+                      [0, 0, 1]]
                       )
 
         #
-        Gu = np.array([np.cos(theta_0) * dt, 0],
-                      [np.sin(theta_0) * dt, 0],
-                      [0, dt])
+        Gu = np.array([[np.cos(theta_0) * dt, -(1/2) * V * dt**2 * np.sin(theta_0)],
+                      [np.sin(theta_0) * dt, (1/2) * V * dt**2 * np.cos(theta_0)],
+                      [0, dt]])
+        Gu = np.array([[np.cos(theta_0) * dt, 0],
+                       [np.sin(theta_0) * dt, 0],
+                       [0, dt]])
 
     g = np.array([x, y, theta])
 
