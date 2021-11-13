@@ -104,7 +104,7 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     r_base = x[:2]
 
     # First rotate back and then translate
-    camera_xy_in_world = (rotation_matrix(-th_base) @ tf_base_to_camera[:2]) + r_base
+    camera_xy_in_world = (rotation_matrix(th_base) @ tf_base_to_camera[:2]) + r_base
     x_cam, y_cam = camera_xy_in_world[0], camera_xy_in_world[1]
     th_cam = x[2] + tf_base_to_camera[2]
 
