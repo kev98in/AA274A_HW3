@@ -115,12 +115,14 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     r_in_cam = r - np.linalg.norm(camera_xy_in_world) * np.cos(alpha - angle)
     h = np.array([alpha_in_cam, r_in_cam])
 
+    print("------------")
     print("alpha", alpha)
     print("alpha_in_cam", alpha_in_cam)
     print("angle", angle)
     print("th_cam_H", th_cam_H)
     print("th_base", th_base)
     print("th_cam", th_cam)
+    print("------------")
 
     # Third, get the Jacobian
     # partial h / x  = [ 0  (see below)]
