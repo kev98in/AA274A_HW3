@@ -26,7 +26,7 @@ def compute_dynamics(xvec, u, dt, compute_jacobians=True):
     theta_0 = xvec[2]
     theta = xvec[2] + u[1] * dt
 
-    if om > EPSILON_OMEGA:
+    if abs(om) > EPSILON_OMEGA:
         x = xvec[0] + V / om * (np.sin(theta) - np.sin(theta_0))
         y = xvec[1] + V / om * (-np.cos(theta) + np.cos(theta_0))
 
