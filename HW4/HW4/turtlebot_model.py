@@ -35,7 +35,7 @@ def compute_dynamics(xvec, u, dt, compute_jacobians=True):
                       [0, 0, 1]]
                       )
         Gu = np.array([[1/om * (np.sin(theta) - np.sin(theta_0)), V/om * (dt * np.cos(theta) + 1/om * (np.sin(theta_0) - np.sin(theta)))],
-                      [1/om * (np.cos(theta_0) - np.cos(theta)),  V/om * (dt * np.sin(theta) + 1/om * np.cos(theta) - np.cos(theta_0))],
+                      [1/om * (np.cos(theta_0) - np.cos(theta)),  V/om * (dt * np.sin(theta) + 1/om * (np.cos(theta) - np.cos(theta_0)))],
                       [0, dt]])
 
     else:
