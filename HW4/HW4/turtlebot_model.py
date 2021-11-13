@@ -21,6 +21,39 @@ def compute_dynamics(xvec, u, dt, compute_jacobians=True):
     # HINT: Since theta is changing with time, try integrating x, y wrt d(theta) instead of dt by introducing om
     # HINT: When abs(om) < EPSILON_OMEGA, assume that the theta stays approximately constant ONLY for calculating the next x, y
     #       New theta should not be equal to theta. Jacobian with respect to om is not 0.
+    V = u[0]
+    om = u[1]
+    theta_0 = xvec[2]
+    theta = xvec[2] + u[1] * dt
+
+    if om > EPSILON_OMEGA:
+        x = xvec[0] + V / om * (np.sin(theta) - np.sin(theta_0))
+        y = xvec[1] + V / om * (-np.cos(theta) + np.cos(theta_0))
+
+        Gx = np.array([1, 0, V / om * (np.cos(theta_0 + om * dt) - np.cos(theta_0))],
+                      [0, 1, V / om * (np.sin(theta_0 + om * dt) - np.sin(theta_0))],
+                      [0, 0, 1]
+                      )
+        Gu = np.array([1/om * (np.sin(theta) - np.sin(theta_0)), V/om * (dt * np.cos(theta) + 1/om * (np.sin(theta_0) - np.sin(theta)))],
+                      [1/om * (np.cos(theta_0) - np.cos(theta)),  V/om * (dt * np.sin(theta) + 1/om * np.cos(theta) - np.cos(theta_0))],
+                      [0, dt])
+
+    else:
+        x = xvec[0] + V * np.cos(theta_0) * dt
+        y = xvec[1] + V * np.sin(theta_0) * dt
+
+        # lim (d/dt) = d/dt (lim )
+        Gx = np.array([1, 0, - V * np.sin(theta_0) * dt],
+                      [0, 1, V * np.cos(theta_0) * dt],
+                      [0, 0, 1]
+                      )
+
+        #
+        Gu = np.array([np.cos(theta_0) * dt, 0],
+                      [np.sin(theta_0) * dt, 0],
+                      [0, dt])
+
+    g = np.array([x, y, theta])
 
 
     ########## Code ends here ##########
