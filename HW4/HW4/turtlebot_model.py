@@ -102,6 +102,7 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
 
     x_base, y_base, th_base = x
     r_base = x[:2]
+    x_cam_H, y_cam_H, th_cam_H = tf_base_to_camera
 
     # First rotate back and then translate
     camera_xy_in_world = (rotation_matrix(th_base) @ tf_base_to_camera[:2]) + r_base
@@ -114,14 +115,19 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     r_in_cam = r - np.linalg.norm(camera_xy_in_world) * np.cos(alpha - angle)
     h = np.array([alpha_in_cam, r_in_cam])
 
+    print("alpha", alpha)
+    print("alpha_in_cam", alpha_in_cam)
+    print("angle", angle)
+    print("th_cam_H", th_cam_H)
+    print("th_base", th_base)
+    print("th_cam", th_cam)
+
     # Third, get the Jacobian
     # partial h / x  = [ 0  (see below)]
     # partial h / y  = [ 0  (see below)]
     # partial h / th = [-1  (see below)]
     cos_th_base = np.cos(th_base)
     sin_th_base = np.sin(th_base)
-
-    x_cam_H, y_cam_H, th_cam_H = tf_base_to_camera
 
     denominator_term_1 = x_base + x_cam_H * cos_th_base - y_cam_H * sin_th_base
     denominator_term_2 = y_base + y_cam_H * cos_th_base + x_cam_H * sin_th_base
