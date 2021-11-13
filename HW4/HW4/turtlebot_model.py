@@ -121,8 +121,10 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     cos_th_base = np.cos(th_base)
     sin_th_base = np.sin(th_base)
 
-    denominator_term_1 = x_base + x_cam * cos_th_base - y_cam * sin_th_base
-    denominator_term_2 = y_base + y_cam * cos_th_base + x_cam * sin_th_base
+    x_cam_H, y_cam_H, th_cam_H = tf_base_to_camera
+
+    denominator_term_1 = x_base + x_cam_H * cos_th_base - y_cam_H * sin_th_base
+    denominator_term_2 = y_base + y_cam_H * cos_th_base + x_cam_H * sin_th_base
     denominator = np.sqrt(denominator_term_1 ** 2 + denominator_term_2 ** 2)
 
     projection_factor = np.cos(alpha - angle)
