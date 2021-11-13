@@ -41,8 +41,8 @@ class Ekf(object):
 
         ########## Code starts here ##########
         # TODO: Update self.x, self.Sigma.
-
-
+        self.x = g(self.x, u)
+        self.Sigma = Gx @ self.Sigma @ Gx.T + dt * Gu @ self.R @ Gu.T
         ########## Code ends here ##########
 
     def transition_model(self, u, dt):
