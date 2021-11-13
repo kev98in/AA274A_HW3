@@ -41,7 +41,7 @@ class Ekf(object):
 
         ########## Code starts here ##########
         # TODO: Update self.x, self.Sigma.
-        self.x = g(self.x, u)
+        self.x = g
         self.Sigma = Gx @ self.Sigma @ Gx.T + dt * Gu @ self.R @ Gu.T
         ########## Code ends here ##########
 

@@ -48,13 +48,14 @@ def compute_dynamics(xvec, u, dt, compute_jacobians=True):
                       [0, 0, 1]]
                       )
 
-        #
+        # lim (d/dt)
         Gu = np.array([[np.cos(theta_0) * dt, -(1/2) * V * dt**2 * np.sin(theta_0)],
                       [np.sin(theta_0) * dt, (1/2) * V * dt**2 * np.cos(theta_0)],
                       [0, dt]])
-        Gu = np.array([[np.cos(theta_0) * dt, 0],
-                       [np.sin(theta_0) * dt, 0],
-                       [0, dt]])
+        # d/dt (lim)
+        # Gu = np.array([[np.cos(theta_0) * dt, 0],
+        #                [np.sin(theta_0) * dt, 0],
+        #                [0, dt]])
 
     g = np.array([x, y, theta])
 
