@@ -2,6 +2,7 @@ import numpy as np
 
 EPSILON_OMEGA = 1e-3
 
+
 def compute_dynamics(xvec, u, dt, compute_jacobians=True):
     """
     Compute Turtlebot dynamics (unicycle model).
@@ -67,6 +68,7 @@ def compute_dynamics(xvec, u, dt, compute_jacobians=True):
 
     return g, Gx, Gu
 
+
 def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian=True):
     """
     Given a single map line in the world frame, outputs the line parameters
@@ -93,6 +95,40 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     # HINT: What is the projection of the camera location (x_cam, y_cam) on the line r? 
     # HINT: To find Hx, write h in terms of the pose of the base in world frame (x_base, y_base, th_base)
 
+    def rotation_matrix(theta):
+        c = np.cos(theta)
+        s = np.sin(theta)
+        return np.array([[c, -s], [s, c]])
+
+    # First rotate back and then translate
+    camera_xy_in_world = (rotation_matrix(-x[2]) @ tf_base_to_camera[:2]) - x[:2]
+    x_cam, y_cam = camera_xy_in_world[0], camera_xy_in_world[1]
+    th_cam = x[2] + tf_base_to_camera[2]
+
+    # Second, get the (alpha_in_cam, r_in_cam)
+    alpha_in_cam = alpha - th_cam
+    r_in_cam = r - np.linalg.norm(camera_xy_in_world) * np.cos(alpha_in_cam)
+    h = (alpha_in_cam, r_in_cam)
+
+    # Third, get the Jacobian
+    # partial h / x  = [ 0  (see below)]
+    # partial h / y  = [ 0  (see below)]
+    # partial h / th = [-1  (see below)]
+    x_base, y_base, th_base = x
+    cos_th_base = np.cos(th_base)
+    sin_th_base = np.sin(th_base)
+
+    denominator_term_1 = -x_base + x_cam * cos_th_base + y_cam * sin_th_base
+    denominator_term_2 = y_base - y_cam * cos_th_base + x_cam * sin_th_base
+    denominator = np.sqrt(denominator_term_1 ** 2 + denominator_term_2 ** 2)
+
+    projection_factor = np.cos(alpha_in_cam)
+
+    H12 = projection_factor * denominator_term_1 / denominator
+    H22 = - projection_factor * denominator_term_2 / denominator
+    H32 = - np.sin(alpha_in_cam) * denominator
+
+    Hx = np.array([[0, H12], [0, H22], [-1, H32]])
 
     ########## Code ends here ##########
 
