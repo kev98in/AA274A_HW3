@@ -110,8 +110,8 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
 
     # Second, get the (alpha_in_cam, r_in_cam)
     alpha_in_cam = alpha - th_cam
-    angle = np.arctan2(y_cam, x_cam)
-    r_in_cam = r - np.linalg.norm(camera_xy_in_world) * np.cos(alpha - angle)
+    # angle = np.arctan2(y_cam, x_cam)
+    r_in_cam = r - np.linalg.norm(camera_xy_in_world) * np.cos(alpha_in_cam)
     h = np.array([alpha_in_cam, r_in_cam])
 
     # Third, get the Jacobian
