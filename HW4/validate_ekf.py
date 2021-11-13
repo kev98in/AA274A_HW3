@@ -173,6 +173,7 @@ def validate_localization_compute_predicted_measurements():
     # Compare measurements
     hs, Hs = ekf_loc.compute_predicted_measurements()
     for j in range(ekf_loc.map_lines.shape[1]):
+        print("Run ", j, " at ", ekf_loc.x)
         h, Hx = hs[:,j], Hs[j]
         h_ref, Hx_ref = validation[j]
         if np.linalg.norm(h - h_ref) + np.linalg.norm(Hx - Hx_ref) > 1e-3:
