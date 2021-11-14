@@ -100,7 +100,7 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
         s = np.sin(theta)
         return np.array([[c, -s], [s, c]])
 
-    rad2deg = 180/pi
+    rad2deg = 180/np.pi
 
     x_base, y_base, th_base = x
     r_base = x[:2]
@@ -122,7 +122,6 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     print("alpha", alpha * rad2deg)
     print("alpha_in_cam", alpha_in_cam * rad2deg)
     print("angle", angle_camera_w * rad2deg)
-    print("theta_cam_w", th_cam * rad2deg)
     print("th_cam_H", th_cam_H * rad2deg)
     print("th_base", th_base * rad2deg)
     print("th_cam", th_cam * rad2deg)
