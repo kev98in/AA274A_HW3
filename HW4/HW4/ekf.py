@@ -165,7 +165,7 @@ class EkfLocalization(Ekf):
         # TODO: Compute z, Q.
         # HINT: The scipy.linalg.block_diag() function may be useful.
         # HINT: A list can be unpacked using the * (splat) operator.
-        z = np.vstack(v_list)
+        z = np.hstack(v_list).T
         Q = scipy.linalg.block_diag(* Q_list)
         H = np.vstack(H_list)
 
