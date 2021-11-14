@@ -81,7 +81,10 @@ class Ekf(object):
 
         ########## Code starts here ##########
         # TODO: Update self.x, self.Sigma.
-
+        S = H @ self.Sigma @ H.T + Q
+        K = self.Sigma @ H.T @ np.linalg.solve(S, np.eye(S.shape[0]))
+        self.x = self.x + K @ z
+        self.Sigma = self.Sigma - K @ S @ K.T
 
         ########## Code ends here ##########
 
@@ -154,8 +157,10 @@ class EkfLocalization(Ekf):
         ########## Code starts here ##########
         # TODO: Compute z, Q.
         # HINT: The scipy.linalg.block_diag() function may be useful.
-        # HINT: A list can be unpacked using the * (splat) operator. 
-
+        # HINT: A list can be unpacked using the * (splat) operator.
+        z = np.vstack(v_list)
+        Q = scipy.linalg.block_diag(* Q_list)
+        H = np.vstack(H_list)
 
         ########## Code ends here ##########
 
