@@ -32,12 +32,14 @@ def compute_dynamics(xvec, u, dt, compute_jacobians=True):
         y = xvec[1] + V / om * (-np.cos(theta) + np.cos(theta_0))
 
         Gx = np.array([[1, 0, V / om * (np.cos(theta_0 + om * dt) - np.cos(theta_0))],
-                      [0, 1, V / om * (np.sin(theta_0 + om * dt) - np.sin(theta_0))],
-                      [0, 0, 1]]
+                       [0, 1, V / om * (np.sin(theta_0 + om * dt) - np.sin(theta_0))],
+                       [0, 0, 1]]
                       )
-        Gu = np.array([[1/om * (np.sin(theta) - np.sin(theta_0)), V/om * (dt * np.cos(theta) + 1/om * (np.sin(theta_0) - np.sin(theta)))],
-                      [1/om * (np.cos(theta_0) - np.cos(theta)),  V/om * (dt * np.sin(theta) + 1/om * (np.cos(theta) - np.cos(theta_0)))],
-                      [0, dt]])
+        Gu = np.array([[1 / om * (np.sin(theta) - np.sin(theta_0)),
+                        V / om * (dt * np.cos(theta) + 1 / om * (np.sin(theta_0) - np.sin(theta)))],
+                       [1 / om * (np.cos(theta_0) - np.cos(theta)),
+                        V / om * (dt * np.sin(theta) + 1 / om * (np.cos(theta) - np.cos(theta_0)))],
+                       [0, dt]])
 
     else:
         x = xvec[0] + V * np.cos(theta_0) * dt
@@ -45,21 +47,20 @@ def compute_dynamics(xvec, u, dt, compute_jacobians=True):
 
         # lim (d/dt) = d/dt (lim )
         Gx = np.array([[1, 0, - V * np.sin(theta_0) * dt],
-                      [0, 1, V * np.cos(theta_0) * dt],
-                      [0, 0, 1]]
+                       [0, 1, V * np.cos(theta_0) * dt],
+                       [0, 0, 1]]
                       )
 
         # lim (d/dt)
-        Gu = np.array([[np.cos(theta_0) * dt, -(1/2) * V * dt**2 * np.sin(theta_0)],
-                      [np.sin(theta_0) * dt, (1/2) * V * dt**2 * np.cos(theta_0)],
-                      [0, dt]])
+        Gu = np.array([[np.cos(theta_0) * dt, -(1 / 2) * V * dt ** 2 * np.sin(theta_0)],
+                       [np.sin(theta_0) * dt, (1 / 2) * V * dt ** 2 * np.cos(theta_0)],
+                       [0, dt]])
         # d/dt (lim)
         # Gu = np.array([[np.cos(theta_0) * dt, 0],
         #                [np.sin(theta_0) * dt, 0],
         #                [0, dt]])
 
     g = np.array([x, y, theta])
-
 
     ########## Code ends here ##########
 
@@ -100,7 +101,7 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
         s = np.sin(theta)
         return np.array([[c, -s], [s, c]])
 
-    rad2deg = 180/np.pi
+    rad2deg = 180 / np.pi
 
     x_base, y_base, th_base = x
     r_base = x[:2]
@@ -134,23 +135,15 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     cos_th_base = np.cos(th_base)
     sin_th_base = np.sin(th_base)
 
-    denominator_term_1 = x_base + x_cam_H * cos_th_base - y_cam_H * sin_th_base
-    denominator_term_2 = y_base + y_cam_H * cos_th_base + x_cam_H * sin_th_base
-    denominator = np.sqrt(denominator_term_1 ** 2 + denominator_term_2 ** 2)
+    p = x_cam_H
+    q = y_cam_H
 
-    projection_factor = np.cos(alpha - angle_camera_w)
-
-    # H12 = - projection_factor * denominator_term_1 / denominator
-    # H22 = - projection_factor * denominator_term_2 / denominator
-    H32 = - np.sin(alpha - th_base) * denominator
-    ca = np.cos(alpha)
-    ca2 = np.cos(2 * alpha)
-    sa = np.sin(alpha)
-    sa2 = np.sin(2 * alpha)
-
-    H12 = (- ca / 2) - (ca * ca2 / 2) - (sa * sa2 / 2)
-    H22 = (- sa / 2) + (ca2 * sa / 2) - (ca * sa2 / 2)
-    # H32 = (- ca / 2) + (ca * ca2)
+    tmp = -np.cos(alpha) * (p * np.cos(th_base) - q * np.sin(th_base) + x_base) \
+          - np.sin(alpha) * (p * np.sin(th_base) + q * np.cos(th_base) + y_base) + r
+    H12 = -np.cos(alpha) * tmp / abs(tmp)
+    H22 = -np.sin(alpha) * tmp / abs(tmp)
+    H32 = (- np.cos(alpha) * (-p * np.sin(th_base) - q * np.cos(th_base)) \
+           - np.sin(alpha) * (p * np.cos(th_base) - q * np.sin(th_base))) * tmp / abs(tmp)
 
     Hx = np.array([[0, 0, -1], [H12, H22, H32]])
 
@@ -178,8 +171,8 @@ def normalize_line_parameters(h, Hx=None):
         alpha += np.pi
         r *= -1
         if Hx is not None:
-            Hx[1,:] *= -1
-    alpha = (alpha + np.pi) % (2*np.pi) - np.pi
+            Hx[1, :] *= -1
+    alpha = (alpha + np.pi) % (2 * np.pi) - np.pi
     h = np.array([alpha, r])
 
     if Hx is not None:
