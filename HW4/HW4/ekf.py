@@ -203,6 +203,31 @@ class EkfLocalization(Ekf):
         # HINT: For each of the I observed lines, 
         #       find the closest predicted line and the corresponding minimum Mahalanobis distance
         #       if the minimum distance satisfies the gating criteria, add corresponding entries to v_list, Q_list, H_list
+        I = z_raw.shape[1]
+        J = self.map_lines.shape[1]
+
+        v_list = []
+        Q_list = []
+        H_list = []
+
+        for i in range(I):
+            Sij = np.empty([2,2,J])
+            dij = np.empty([J,])
+            vij = np.empty([2,J])
+
+            for j in range(J):
+                Sij[:,:,j] = Hs[j] @ self.Sigma @ Hs[j].T + Q_raw
+                vij[0,j] = angle_diff(z_raw[0], hs[0,j])
+                vij[1,j] = z_raw[1] - hs[1,j]
+                dij[j] = vij.T * np.linalg.solve(Sij, vij)
+
+            min_idx = np.argmin(dij)
+            dij_min = dij[min_idx]
+
+            if dij_min < self.g**2:
+                v_list.append(vij[:,min_idx])
+                Q_list.append(Sij[:,:,min_idx])
+                H_list.append(Hs[j])
 
 
         ########## Code ends here ##########
