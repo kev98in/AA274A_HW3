@@ -119,27 +119,17 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     r_in_cam = r - np.linalg.norm(camera_xy_in_world) * np.cos(alpha - angle_camera_w)
     h = np.array([alpha_in_cam, r_in_cam])
 
-    print("------------")
-    print("alpha", alpha * rad2deg)
-    print("alpha_in_cam", alpha_in_cam * rad2deg)
-    print("angle", angle_camera_w * rad2deg)
-    print("th_cam_H", th_cam_H * rad2deg)
-    print("th_base", th_base * rad2deg)
-    print("th_cam", th_cam * rad2deg)
-    print("------------")
-
     # Third, get the Jacobian
     # partial h / x  = [ 0  (see below)]
     # partial h / y  = [ 0  (see below)]
     # partial h / th = [-1  (see below)]
-    cos_th_base = np.cos(th_base)
-    sin_th_base = np.sin(th_base)
 
     p = x_cam_H
     q = y_cam_H
 
-    tmp = -np.cos(alpha) * (p * np.cos(th_base) - q * np.sin(th_base) + x_base) \
-          - np.sin(alpha) * (p * np.sin(th_base) + q * np.cos(th_base) + y_base) + r
+    # tmp = -np.cos(alpha) * (p * np.cos(th_base) - q * np.sin(th_base) + x_base) \
+    #     - np.sin(alpha) * (p * np.sin(th_base) + q * np.cos(th_base) + y_base) + r
+
     H12 = -np.cos(alpha)
     H22 = -np.sin(alpha)
     H32 = (- np.cos(alpha) * (-p * np.sin(th_base) - q * np.cos(th_base)) \
