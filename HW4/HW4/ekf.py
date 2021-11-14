@@ -216,9 +216,9 @@ class EkfLocalization(Ekf):
             vij = np.empty([2,J])
 
             for j in range(J):
-                Sij[:,:,j] = Hs[j] @ self.Sigma @ Hs[j].T + Q_raw
-                vij[0,j] = angle_diff(z_raw[0], hs[0,j])
-                vij[1,j] = z_raw[1] - hs[1,j]
+                Sij[:,:,j] = Hs[j] @ self.Sigma @ Hs[j].T + Q_raw[i]
+                vij[0,j] = angle_diff(z_raw[0,i], hs[0, j])
+                vij[1,j] = z_raw[1,i] - hs[1,j]
                 dij[j] = vij.T * np.linalg.solve(Sij, vij)
 
             min_idx = np.argmin(dij)
