@@ -84,12 +84,6 @@ class Ekf(object):
         S = H @ self.Sigma @ H.T + Q
         K = self.Sigma @ H.T @ np.linalg.inv(S)
 
-        print(z)
-        print(Q)
-        print(H)
-        print(S)
-        print(K)
-
         self.x = self.x + K @ z
         self.Sigma = self.Sigma - K @ S @ K.T
 
