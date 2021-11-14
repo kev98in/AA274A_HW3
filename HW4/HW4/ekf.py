@@ -82,7 +82,7 @@ class Ekf(object):
         ########## Code starts here ##########
         # TODO: Update self.x, self.Sigma.
         S = H @ self.Sigma @ H.T + Q
-        K = self.Sigma @ H.T @ np.linalg.solve(S, np.eye(S.shape[0]))
+        K = self.Sigma @ H.T @ np.linalg.inv(S)
         self.x = self.x + K @ z
         self.Sigma = self.Sigma - K @ S @ K.T
 
