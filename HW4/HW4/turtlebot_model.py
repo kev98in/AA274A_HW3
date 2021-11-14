@@ -140,10 +140,10 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
 
     tmp = -np.cos(alpha) * (p * np.cos(th_base) - q * np.sin(th_base) + x_base) \
           - np.sin(alpha) * (p * np.sin(th_base) + q * np.cos(th_base) + y_base) + r
-    H12 = -np.cos(alpha) * tmp / abs(tmp)
-    H22 = -np.sin(alpha) * tmp / abs(tmp)
+    H12 = -np.cos(alpha)
+    H22 = -np.sin(alpha)
     H32 = (- np.cos(alpha) * (-p * np.sin(th_base) - q * np.cos(th_base)) \
-           - np.sin(alpha) * (p * np.cos(th_base) - q * np.sin(th_base))) * tmp / abs(tmp)
+           - np.sin(alpha) * (p * np.cos(th_base) - q * np.sin(th_base)))
 
     Hx = np.array([[0, 0, -1], [H12, H22, H32]])
 
