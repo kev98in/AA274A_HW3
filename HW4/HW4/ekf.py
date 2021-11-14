@@ -227,7 +227,7 @@ class EkfLocalization(Ekf):
             if dij_min < self.g**2:
                 v_list.append(vij[:,min_idx])
                 Q_list.append(Sij[:,:,min_idx])
-                H_list.append(Hs[j])
+                H_list.append(Hs[min_idx])
 
 
         ########## Code ends here ##########
