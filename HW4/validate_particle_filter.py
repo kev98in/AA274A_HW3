@@ -258,6 +258,6 @@ if __name__ == '__main__':
 
     ## Subcomponent validation
     validate_transition_model()
-    # validate_predicted_measurements()
-    # validate_compute_innovations()
+    validate_predicted_measurements()
+    validate_compute_innovations()
     # validate_resample()

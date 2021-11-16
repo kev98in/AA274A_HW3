@@ -214,7 +214,12 @@ class MonteCarloLocalization(ParticleFilter):
         #       particles. You may find scipy.stats.multivariate_normal.pdf()
         #       useful.
         # Hint: You'll need to call self.measurement_model()
+        vs, Q = self.measurement_model(z_raw, Q_raw)
+        I = z_raw.size()/2
+        p = np.zeros(self.M)
 
+        for m in range(self.M):
+            ws[m] = scipy.stats.multivariate_normal.pdf(vs[m,:], np.zeros(2*I), Q)
 
         ########## Code ends here ##########
 
@@ -234,12 +239,12 @@ class MonteCarloLocalization(ParticleFilter):
             z: np.array[M,2I]  - joint measurement mean for M particles.
             Q: np.array[2I,2I] - joint measurement covariance.
         """
-        vs = self.compute_innovations(z_raw, np.array(Q_raw))
+        vs = self.compute_innovations(z_raw, np.array(Q_raw))   # M x 2I
 
         ########## Code starts here ##########
         # TODO: Compute Q.
         # Hint: You might find scipy.linalg.block_diag() useful
-
+        Q = scipy.linalg.block_diag(*Q_raw)
 
         ########## Code ends here ##########
 
@@ -288,6 +293,25 @@ class MonteCarloLocalization(ParticleFilter):
         # Hint: For the faster solution, you might find np.expand_dims(), 
         #       np.linalg.solve(), np.meshgrid() useful.
 
+        I = z_raw.shape[1]
+        J = self.map_lines.shape[1]
+
+        vs = np.empty((self.M,I,2))
+
+        hs = self.compute_predicted_measurements()
+
+        for m in range(self.M):
+            for i in range(I):   # for each measurement
+                dij = np.empty([J,])
+                vij = np.empty([2,J])
+
+                for j in range(J):  # for each line
+                    vij[0,j] = angle_diff(z_raw[0,i], hs[0, j])
+                    vij[1,j] = z_raw[1,i] - hs[1,j]
+                    dij[j] = vij[:,j].T @ np.linalg.solve(Q_raw[i,:,:], vij[:,j])
+
+                min_idx = np.argmin(dij)
+                vs[m,i,:] = vij[:,min_idx]
 
         ########## Code ends here ##########
 
@@ -318,6 +342,21 @@ class MonteCarloLocalization(ParticleFilter):
         # Hint: For the faster solution, it does not call tb.transform_line_to_scanner_frame()
         #       or tb.normalize_line_parameters(), but reimplement these steps vectorized.
 
+        J = self.map_lines.shape[1]
+        hs = np.zeros((self.M,2,J))
+
+        for i in range(self.M):
+            for j in range(J):
+                ########## Code starts here ##########
+                # TODO: Compute h, Hx using tb.transform_line_to_scanner_frame() for the j'th map line.
+                # HINT: This should be a single line of code.
+                line = self.map_lines[:, j]
+                h, Hx = tb.transform_line_to_scanner_frame(line, self.xs[i,:], self.tf_base_to_camera)
+
+                ########## Code ends here ##########
+
+                h, Hx = tb.normalize_line_parameters(h, Hx)
+                hs[i,:,j] = h
 
         ########## Code ends here ##########
 
