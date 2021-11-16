@@ -365,7 +365,7 @@ class EkfSlam(Ekf):
         # HINT: Should be almost identical to EkfLocalization.compute_innovations(). What is J now?
         # HINT: Instead of getting world-frame line parameters from self.map_lines, you must extract them from the state self.x.
         I = z_raw.shape[1]
-        J = self.map_lines.shape[0]
+        J = (self.x.size - 3) // 2
 
         v_list = []
         Q_list = []
