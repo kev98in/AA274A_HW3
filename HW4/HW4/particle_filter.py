@@ -306,8 +306,8 @@ class MonteCarloLocalization(ParticleFilter):
                 vij = np.empty([2,J])
 
                 for j in range(J):  # for each line
-                    vij[0,j] = angle_diff(z_raw[0,i], hs[0, j])
-                    vij[1,j] = z_raw[1,i] - hs[1,j]
+                    vij[0,j] = angle_diff(z_raw[0,i], hs[m, 0, j])
+                    vij[1,j] = z_raw[1,i] - hs[m,1,j]
                     dij[j] = vij[:,j].T @ np.linalg.solve(Q_raw[i,:,:], vij[:,j])
 
                 min_idx = np.argmin(dij)
