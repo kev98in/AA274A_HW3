@@ -323,4 +323,4 @@ if __name__ == '__main__':
 
     ### PROBLEM 2
 
-   # validate_ekf_slam()
+    validate_ekf_slam()
