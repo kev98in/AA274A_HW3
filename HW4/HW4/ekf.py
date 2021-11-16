@@ -418,7 +418,7 @@ class EkfSlam(Ekf):
 
             # First two map lines are assumed fixed so we don't want to propagate
             # any measurement correction to them.
-            h, Hx[:, :3] = tb.transform_line_to_scanner_frame(np.array([alpha, r]), self.x, self.tf_base_to_camera, compute_jacobian=True)
+            h, Hx[:, :3] = tb.transform_line_to_scanner_frame(np.array([alpha, r]), self.x[:3], self.tf_base_to_camera, compute_jacobian=True)
             if j >= 2:
                 Hx[:,idx_j:idx_j+2] = np.eye(2)  # FIX ME!
 
