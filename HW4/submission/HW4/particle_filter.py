@@ -3,7 +3,9 @@ import scipy.linalg  # You may find scipy.linalg.block_diag useful
 import scipy.stats  # You may find scipy.stats.multivariate_normal.pdf useful
 from . import turtlebot_model as tb
 
+
 EPSILON_OMEGA = 1e-3
+
 
 class ParticleFilter(object):
     """

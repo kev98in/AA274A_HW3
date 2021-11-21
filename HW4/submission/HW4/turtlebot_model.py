@@ -81,11 +81,17 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
          h: np.array[2,]  - line parameters in the scanner (camera) frame.
         Hx: np.array[2,3] - Jacobian of h with respect to x.
     """
+    single_inputs = (len(line.shape) == 1)
 
     # alpha, r = line
-    alpha = line[0,:]
-    r = line[1,:]
-    J = line.shape[1]
+    if single_inputs:
+        line_arr = np.expand_dims(line, axis=1)
+    else:
+        line_arr = line
+
+    alpha = line_arr[0, :]
+    r = line_arr[1, :]
+    J = line_arr.shape[1]
 
     ########## Code starts here ##########
     # TODO: Compute h, Hx
@@ -117,12 +123,11 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     angle_camera_w = np.arctan2(y_cam, x_cam)
 
     r_in_cam = r - np.linalg.norm(camera_xy_in_world) * np.cos(alpha - angle_camera_w)
-    # h = np.array([alpha_in_cam, r_in_cam])
+
     h = np.vstack([alpha_in_cam, r_in_cam])
 
-    # print("h shape:", h.shape)
-    # print("alpha in cam:", alpha_in_cam)
-    # print("r_in_cam:", r_in_cam)
+    if single_inputs:
+        h = h.flatten()
 
     # Third, get the Jacobian
     # partial h / x  = [ 0  (see below)]
@@ -138,20 +143,24 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     if not compute_jacobian:
         return h
 
-    Hx = np.empty([2,3,J])
+    Hx = np.empty([2, 3, J])
 
-    Hx[0,:2,:] = np.zeros((2,J))
-    Hx[0,2,:] = -np.ones((1,J))
-    Hx[1,0,:] = -np.cos(alpha)  # 1 x J
-    Hx[1,1,:] = -np.sin(alpha)  # 1 x J
-    Hx[1,2,:] = (- np.cos(alpha) * (-p * np.sin(th_base) - q * np.cos(th_base)) \
-           - np.sin(alpha) * (p * np.cos(th_base) - q * np.sin(th_base)))  # 1 x J
+    Hx[0, :2, :] = np.zeros((2, J))
+    Hx[0, 2, :] = -np.ones((1, J))
+    Hx[1, 0, :] = -np.cos(alpha)  # 1 x J
+    Hx[1, 1, :] = -np.sin(alpha)  # 1 x J
+    Hx[1, 2, :] = (- np.cos(alpha) * (-p * np.sin(th_base) - q * np.cos(th_base))
+                   - np.sin(alpha) * (p * np.cos(th_base) - q * np.sin(th_base)))  # 1 x J
 
     # H12 = -np.cos(alpha)  # 1 x J
     # H22 = -np.sin(alpha)  # 1 x J
     # H32 = (- np.cos(alpha) * (-p * np.sin(th_base) - q * np.cos(th_base)) \
     #        - np.sin(alpha) * (p * np.cos(th_base) - q * np.sin(th_base)))  # 1 x J
     # Hx = np.array([[0, 0, -1], [H12, H22, H32]])
+
+    # Remove extra last axis from Hx if needed
+    if single_inputs:
+        Hx = np.squeeze(Hx)
 
     ########## Code ends here ##########
 
@@ -183,19 +192,36 @@ def normalize_line_parameters(h, Hx=None):
     #     return h, Hx
     # return h
 
-    alpha = h[0, :]
-    r = h[1, :]
+    single_inputs = (len(h.shape) == 1)
+
+    # alpha, r = line
+    if single_inputs:
+        h_arr = np.expand_dims(h, axis=1)
+        if Hx is not None:
+            Hx_expanded = np.expand_dims(Hx, axis=2)
+        else:
+            Hx_expanded = None
+    else:
+        h_arr = h
+        Hx_expanded = Hx
+
+    alpha = h_arr[0, :]
+    r = h_arr[1, :]
+
     idx = r < 0
     alpha[idx] = alpha[idx] + np.pi
     alpha = (alpha + np.pi) % (2 * np.pi) - np.pi
     r[idx] = -r[idx]
+
     h = np.vstack([alpha, r])
-    # print("h shape", h.shape)
-    # print("alpha:", alpha)
-    # print("r:", r)
+    if single_inputs:
+        h = h.squeeze()
 
     if Hx is not None:
-        Hx[1, :, idx] = - Hx[1, :, idx]
+        Hx_expanded[1, :, idx] = - Hx_expanded[1, :, idx]
+
+        if single_inputs:
+            Hx = Hx_expanded.squeeze()
         return h, Hx
 
     return h

@@ -265,7 +265,7 @@ class EkfLocalization(Ekf):
             ########## Code ends here ##########
 
             h, Hx = tb.normalize_line_parameters(h, Hx)
-            hs[:,j] = h
+            hs[:, j] = h
             Hx_list.append(Hx)
 
         return hs, Hx_list
