@@ -84,7 +84,7 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
 
     # alpha, r = line
     alpha = line[0,:]
-    r = line[0,:]
+    r = line[1,:]
     J = line.shape[1]
 
     ########## Code starts here ##########
