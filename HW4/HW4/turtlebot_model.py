@@ -125,10 +125,11 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
 
     r_in_cam = r - np.linalg.norm(camera_xy_in_world) * np.cos(alpha - angle_camera_w)
 
+    h = np.vstack([alpha_in_cam, r_in_cam])
+
     if single_inputs:
-        h = np.array([alpha_in_cam, r_in_cam])
-    else:
-        h = np.vstack([alpha_in_cam, r_in_cam])
+        h = h.flatten()
+
 
     # print("h shape:", h.shape)
     # print("alpha in cam:", alpha_in_cam)
