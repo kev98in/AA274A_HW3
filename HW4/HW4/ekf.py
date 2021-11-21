@@ -418,9 +418,27 @@ class EkfSlam(Ekf):
 
             # First two map lines are assumed fixed so we don't want to propagate
             # any measurement correction to them.
-            h, Hx[:, :3] = tb.transform_line_to_scanner_frame(np.array([alpha, r]), self.x[:3], self.tf_base_to_camera, compute_jacobian=True)
+            h, H_tmp = tb.transform_line_to_scanner_frame(np.array([alpha, r]), self.x[:3], self.tf_base_to_camera, compute_jacobian=True)
+            Hx[:, :3] = H_tmp
             if j >= 2:
-                Hx[:,idx_j:idx_j+2] = np.eye(2)  # FIX ME!
+            
+                def rotation_matrix(theta):
+                    c = np.cos(theta)
+                    s = np.sin(theta)
+                    return np.array([[c, -s], [s, c]])
+
+                rad2deg = 180 / np.pi
+
+                x_base, y_base, th_base = self.x[0:3]
+                r_base = self.x[:2]
+                x_cam_H, y_cam_H, th_cam_H = self.tf_base_to_camera
+
+                # First rotate back and then translate
+                camera_xy_in_world = (rotation_matrix(th_base) @ self.tf_base_to_camera[:2]) + r_base
+                x_cam, y_cam = camera_xy_in_world[0], camera_xy_in_world[1]
+                
+                Hx[:, idx_j:idx_j+2] = np.eye(2)  # FIX ME!
+                Hx[1, idx_j] = -(-x_cam*np.sin(alpha) + y_cam*np.cos(alpha))
 
             ########## Code ends here ##########
 

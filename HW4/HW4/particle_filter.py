@@ -116,7 +116,24 @@ class ParticleFilter(object):
         # Hint: To maximize speed, try to implement the resampling algorithm
         #       without for loops. You may find np.linspace(), np.cumsum(), and
         #       np.searchsorted() useful. This results in a ~10x speedup.
-
+        
+        i = 0
+        c = ws[0]
+        
+        x = np.zeros((xs.shape))
+        w = np.zeros((ws.shape))
+        
+        for m in range(ws.size):
+            u = np.sum(ws)*(r+m/self.M)
+            while c < u:
+                i = i + 1
+                c = c + ws[i]
+            x[m,0:3] = xs[i,:]
+            w[m] = ws[i]
+#            w[m] = 1/self.M - not sure why this isn't right, the algorithm in the assignment tells us to do this
+            
+        self.xs = x
+        self.ws = w
 
         ########## Code ends here ##########
 
@@ -179,9 +196,9 @@ class MonteCarloLocalization(ParticleFilter):
         #       vectorized versions of the dynamics computations directly here
         #       (instead of modifying turtlebot_model). This results in a
         #       ~10x speedup.
-        # Hint: This faster/better solution does not use loop and does 
+        # Hint: This faster/better solution does not use loop and does
         #       not call tb.compute_dynamics. You need to compute the idxs
-        #       where abs(om) > EPSILON_OMEGA and the other idxs, then do separate 
+        #       where abs(om) > EPSILON_OMEGA and the other idxs, then do separate
         #       updates for them
         g = np.zeros((self.M, 3))
 
@@ -214,8 +231,9 @@ class MonteCarloLocalization(ParticleFilter):
         #       particles. You may find scipy.stats.multivariate_normal.pdf()
         #       useful.
         # Hint: You'll need to call self.measurement_model()
+        
         vs, Q = self.measurement_model(z_raw, Q_raw)
-        I = z_raw.size()/2
+        I = z_raw.size // 2
         p = np.zeros(self.M)
 
         for m in range(self.M):
@@ -280,8 +298,8 @@ class MonteCarloLocalization(ParticleFilter):
 
         ########## Code starts here ##########
         # TODO: Compute vs (with shape [M x I x 2]).
-        # Hint: Simple solutions: Using for loop, for each particle, for each 
-        #       observed line, find the most likely map entry (the entry with 
+        # Hint: Simple solutions: Using for loop, for each particle, for each
+        #       observed line, find the most likely map entry (the entry with
         #       least Mahalanobis distance).
         # Hint: To maximize speed, try to eliminate all for loops, or at least
         #       for loops over J. It is possible to solve multiple systems with
@@ -290,7 +308,7 @@ class MonteCarloLocalization(ParticleFilter):
         #       Eliminating loops over I results in a ~2x speedup.
         #       Eliminating loops over M results in a ~5x speedup.
         #       Overall, that's 100x!
-        # Hint: For the faster solution, you might find np.expand_dims(), 
+        # Hint: For the faster solution, you might find np.expand_dims(),
         #       np.linalg.solve(), np.meshgrid() useful.
 
         I = z_raw.shape[1]
@@ -332,7 +350,7 @@ class MonteCarloLocalization(ParticleFilter):
         ########## Code starts here ##########
         # TODO: Compute hs.
         # Hint: We don't need Jacobians for particle filtering.
-        # Hint: Simple solutions: Using for loop, for each particle, for each 
+        # Hint: Simple solutions: Using for loop, for each particle, for each
         #       map line, transform to scanner frmae using tb.transform_line_to_scanner_frame()
         #       and tb.normalize_line_parameters()
         # Hint: To maximize speed, try to compute the predicted measurements
