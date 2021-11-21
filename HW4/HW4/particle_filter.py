@@ -374,11 +374,11 @@ class MonteCarloLocalization(ParticleFilter):
             #     line = self.map_lines[:, j]
             #     h[:,j], Hx[:,:,j] = tb.transform_line_to_scanner_frame(line, self.xs[i,:], self.tf_base_to_camera)
 
-            h, Hx = tb.transform_line_to_scanner_frame(self.map_lines, self.xs[i, :], self.tf_base_to_camera)
+            h = tb.transform_line_to_scanner_frame(self.map_lines, self.xs[i, :], self.tf_base_to_camera, compute_jacobian=False)
 
             ########## Code ends here ##########
 
-            h, Hx = tb.normalize_line_parameters(h, Hx)
+            h, Hx = tb.normalize_line_parameters(h)
             hs[i,:,:] = h
 
         ########## Code ends here ##########

@@ -131,6 +131,9 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     # tmp = -np.cos(alpha) * (p * np.cos(th_base) - q * np.sin(th_base) + x_base) \
     #     - np.sin(alpha) * (p * np.sin(th_base) + q * np.cos(th_base) + y_base) + r
 
+    if not compute_jacobian:
+        return h
+
     Hx = np.empty([2,3,J])
 
     Hx[0,:2,:] = np.zeros((2,J))
@@ -147,9 +150,6 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     # Hx = np.array([[0, 0, -1], [H12, H22, H32]])
 
     ########## Code ends here ##########
-
-    if not compute_jacobian:
-        return h
 
     return h, Hx
 
@@ -185,7 +185,11 @@ def normalize_line_parameters(h, Hx=None):
     alpha[idx] = alpha[idx] + np.pi
     alpha = (alpha + np.pi) % (2 * np.pi) - np.pi
     r[idx] = -r[idx]
-    Hx[1, :, idx] = - Hx[1, :, idx]
     h = np.vstack([alpha, r])
 
-    return h, Hx
+    if Hx is not None:
+        Hx[1, :, idx] = - Hx[1, :, idx]
+        return h, Hx
+
+    return h
+
