@@ -374,7 +374,7 @@ class MonteCarloLocalization(ParticleFilter):
             alpha = (alpha + np.pi) % (2 * np.pi) - np.pi
             r[idx] = -r[idx]
             Hx[1,:,idx] = - Hx[1,:,idx]
-            h = np.vstack([alpha, r]).T
+            h = np.vstack([alpha, r])
 
             return h, Hx
 
