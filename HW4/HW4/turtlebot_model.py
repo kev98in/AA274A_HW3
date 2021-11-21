@@ -82,6 +82,7 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
         Hx: np.array[2,3] - Jacobian of h with respect to x.
     """
     single_inputs = (len(line.shape) == 1)
+    print("Using single inputs? ", single_inputs)
 
     # alpha, r = line
     if single_inputs:
@@ -147,14 +148,14 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     if not compute_jacobian:
         return h
 
-    Hx = np.empty([2,3,J])
+    Hx = np.empty([2, 3, J])
 
-    Hx[0,:2,:] = np.zeros((2,J))
-    Hx[0,2,:] = -np.ones((1,J))
-    Hx[1,0,:] = -np.cos(alpha)  # 1 x J
-    Hx[1,1,:] = -np.sin(alpha)  # 1 x J
-    Hx[1,2,:] = (- np.cos(alpha) * (-p * np.sin(th_base) - q * np.cos(th_base)) \
-           - np.sin(alpha) * (p * np.cos(th_base) - q * np.sin(th_base)))  # 1 x J
+    Hx[0, :2, :] = np.zeros((2, J))
+    Hx[0, 2, :] = -np.ones((1, J))
+    Hx[1, 0, :] = -np.cos(alpha)  # 1 x J
+    Hx[1, 1, :] = -np.sin(alpha)  # 1 x J
+    Hx[1, 2, :] = (- np.cos(alpha) * (-p * np.sin(th_base) - q * np.cos(th_base))
+                   - np.sin(alpha) * (p * np.cos(th_base) - q * np.sin(th_base)))  # 1 x J
 
     # H12 = -np.cos(alpha)  # 1 x J
     # H22 = -np.sin(alpha)  # 1 x J
