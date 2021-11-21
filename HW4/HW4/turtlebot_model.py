@@ -193,17 +193,26 @@ def normalize_line_parameters(h, Hx=None):
     #     return h, Hx
     # return h
 
-    # alpha = h[0, :]
-    # r = h[1, :]
-    alpha, r = h
-    alpha = np.array(alpha)
-    r = np.array(r)
-    
+    single_inputs = (len(h.shape) == 1)
+    print("Using single inputs? ", single_inputs)
+
+    # alpha, r = line
+    if single_inputs:
+        h_arr = np.expand_dims(h, axis=1)
+    else:
+        h_arr = h
+
+    alpha = h_arr[0, :]
+    r = h_arr[1, :]
+
     idx = r < 0
     alpha[idx] = alpha[idx] + np.pi
     alpha = (alpha + np.pi) % (2 * np.pi) - np.pi
     r[idx] = -r[idx]
+
     h = np.vstack([alpha, r])
+    if single_inputs:
+        h = h.squeeze()
     # print("h shape", h.shape)
     # print("alpha:", alpha)
     # print("r:", r)
