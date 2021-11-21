@@ -130,11 +130,6 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     if single_inputs:
         h = h.flatten()
 
-
-    # print("h shape:", h.shape)
-    # print("alpha in cam:", alpha_in_cam)
-    # print("r_in_cam:", r_in_cam)
-
     # Third, get the Jacobian
     # partial h / x  = [ 0  (see below)]
     # partial h / y  = [ 0  (see below)]
@@ -163,6 +158,10 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     # H32 = (- np.cos(alpha) * (-p * np.sin(th_base) - q * np.cos(th_base)) \
     #        - np.sin(alpha) * (p * np.cos(th_base) - q * np.sin(th_base)))  # 1 x J
     # Hx = np.array([[0, 0, -1], [H12, H22, H32]])
+
+    # Remove extra last axis from Hx if needed
+    if single_inputs:
+        Hx = np.squeeze(Hx)
 
     ########## Code ends here ##########
 
@@ -194,8 +193,9 @@ def normalize_line_parameters(h, Hx=None):
     #     return h, Hx
     # return h
 
-    alpha = h[0, :]
-    r = h[1, :]
+    # alpha = h[0, :]
+    # r = h[1, :]
+    alpha, r = h
     idx = r < 0
     alpha[idx] = alpha[idx] + np.pi
     alpha = (alpha + np.pi) % (2 * np.pi) - np.pi
