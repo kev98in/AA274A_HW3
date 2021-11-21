@@ -123,7 +123,7 @@ def compute_dynamics_vectorized(xvec, u, dt, compute_jacobians=True):
     y_small = xvec[idx_small, 1] + v_small * s_theta_0_small * dt
 
     # RECONSTRUCT THE VALUES
-    g = np.empty(N, 3)
+    g = np.empty((N, 3))
     g[idx_large, :] = np.vstack([x_large, y_large, theta_large])
     g[idx_small, :] = np.vstack([x_small, y_small, theta_small])
 
@@ -156,11 +156,11 @@ def compute_dynamics_vectorized(xvec, u, dt, compute_jacobians=True):
                              [0, dt]])
 
         # RECONSTRUCT
-        Gx = np.empty(3, 3, N)
+        Gx = np.empty((3, 3, N))
         Gx[idx_large, :, :] = Gx_large
         Gx[idx_small, :, :] = Gx_small
 
-        Gu = np.empty(3, 2, N)
+        Gu = np.empty((3, 2, N))
         Gu[idx_large, :, :] = Gu_large
         Gu[idx_small, :, :] = Gu_small
         return g, Gx, Gu
