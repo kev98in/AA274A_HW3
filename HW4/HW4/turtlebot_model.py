@@ -71,13 +71,13 @@ def compute_dynamics_vectorized(xvec, u, dt, compute_jacobians=True):
     Compute Turtlebot dynamics (unicycle model).
 
     Inputs:
-                     xvec: np.array[3,N] - Turtlebot state (x, y, theta).
-                        u: np.array[2,N] - Turtlebot controls (V, omega).
+                     xvec: np.array[N, 3] - Turtlebot state (x, y, theta).
+                        u: np.array[N, 2] - Turtlebot controls (V, omega).
         compute_jacobians: bool         - compute Jacobians Gx, Gu if true.
     Outputs:
-         g: np.array[3,N]  - New state after applying u for dt seconds.
-        Gx: np.array[3,3,N] - Jacobian of g with respect to xvec.
-        Gu: np.array[3,2,N] - Jacobian of g with respect to u.
+         g: np.array[N, 3]  - New state after applying u for dt seconds.
+        Gx: np.array[N, 3,3] - Jacobian of g with respect to xvec.
+        Gu: np.array[N, 3,2] - Jacobian of g with respect to u.
     """
     ########## Code starts here ##########
     # TODO: Compute g, Gx, Gu
@@ -87,11 +87,11 @@ def compute_dynamics_vectorized(xvec, u, dt, compute_jacobians=True):
     #       ONLY for calculating the next x, y
     #       New theta should not be equal to theta. Jacobian with respect to om is not 0.
     print("u shape", u.shape)
-    N = u.shape[1]
-    V = u[0, :]
-    om = u[1, :]
-    theta_0 = xvec[2, :]
-    theta = xvec[2, :] + u[1, :] * dt
+    N = u.shape[0]
+    V = u[:, 0]
+    om = u[:, 1]
+    theta_0 = xvec[:, 2]
+    theta = xvec[:, 2] + om * dt
 
     idx_large = om > EPSILON_OMEGA
 
@@ -107,8 +107,8 @@ def compute_dynamics_vectorized(xvec, u, dt, compute_jacobians=True):
     s_theta_large = np.sin(theta_large)
     c_theta_large = np.cos(theta_large)
 
-    x_large = xvec[0, idx_large] + v_om_ratio_large * (s_theta_large - s_theta_0_large)
-    y_large = xvec[1, idx_large] + v_om_ratio_large * (-c_theta_large + c_theta_0_large)
+    x_large = xvec[idx_large, 0] + v_om_ratio_large * (s_theta_large - s_theta_0_large)
+    y_large = xvec[idx_large, 1] + v_om_ratio_large * (-c_theta_large + c_theta_0_large)
 
     # SMALL OM CASE
     idx_small = np.invert(idx_large)
@@ -118,13 +118,13 @@ def compute_dynamics_vectorized(xvec, u, dt, compute_jacobians=True):
     c_theta_0_small = np.cos(theta_0_small)
     v_small = V[idx_small]
 
-    x_small = xvec[0, idx_small] + v_small * c_theta_0_small * dt
-    y_small = xvec[1, idx_small] + v_small * s_theta_0_small * dt
+    x_small = xvec[idx_small, 0] + v_small * c_theta_0_small * dt
+    y_small = xvec[idx_small, 1] + v_small * s_theta_0_small * dt
 
     # RECONSTRUCT THE VALUES
-    g = np.empty(3, N)
-    g[:, idx_large] = np.vstack([x_large, y_large, theta_large])
-    g[:, idx_small] = np.vstack([x_small, y_small, theta_small])
+    g = np.empty(N, 3)
+    g[idx_large, :] = np.vstack([x_large, y_large, theta_large])
+    g[idx_small, :] = np.vstack([x_small, y_small, theta_small])
 
     # Now the Jacobians, if needed
     if compute_jacobians:
@@ -156,12 +156,12 @@ def compute_dynamics_vectorized(xvec, u, dt, compute_jacobians=True):
 
         # RECONSTRUCT
         Gx = np.empty(3, 3, N)
-        Gx[:, :, idx_large] = Gx_large
-        Gx[:, :, idx_small] = Gx_small
+        Gx[idx_large, :, :] = Gx_large
+        Gx[idx_small, :, :] = Gx_small
 
         Gu = np.empty(3, 2, N)
-        Gu[:, :, idx_large] = Gu_large
-        Gu[:, :, idx_small] = Gu_small
+        Gu[idx_large, :, :] = Gu_large
+        Gu[idx_small, :, :] = Gu_small
         return g, Gx, Gu
 
     ########## Code ends here ##########
