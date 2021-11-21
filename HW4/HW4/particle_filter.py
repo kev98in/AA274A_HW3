@@ -378,7 +378,7 @@ class MonteCarloLocalization(ParticleFilter):
 
             ########## Code ends here ##########
 
-            h, Hx = tb.normalize_line_parameters(h)
+            h = tb.normalize_line_parameters(h)
             hs[i,:,:] = h
 
         ########## Code ends here ##########
