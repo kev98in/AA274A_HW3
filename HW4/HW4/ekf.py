@@ -261,10 +261,14 @@ class EkfLocalization(Ekf):
             # HINT: This should be a single line of code.
             line = self.map_lines[:, j]
             h, Hx = tb.transform_line_to_scanner_frame(line, self.x, self.tf_base_to_camera)
+            print("h shape", h.shape)
+            print("Hx shape", Hx.shape)
 
             ########## Code ends here ##########
 
             h, Hx = tb.normalize_line_parameters(h, Hx)
+            print("h shape post", h.shape)
+            print("Hx shape post", Hx.shape)
             hs[:,j] = h
             Hx_list.append(Hx)
 
