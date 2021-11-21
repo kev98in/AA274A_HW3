@@ -199,8 +199,13 @@ def normalize_line_parameters(h, Hx=None):
     # alpha, r = line
     if single_inputs:
         h_arr = np.expand_dims(h, axis=1)
+        if Hx is not None:
+            Hx_expanded = np.expand_dims(Hx, axis=2)
+        else:
+            Hx_expanded = None
     else:
         h_arr = h
+        Hx_expanded = Hx
 
     alpha = h_arr[0, :]
     r = h_arr[1, :]
@@ -218,7 +223,10 @@ def normalize_line_parameters(h, Hx=None):
     # print("r:", r)
 
     if Hx is not None:
-        Hx[1, :, idx] = - Hx[1, :, idx]
+        Hx_expanded[1, :, idx] = - Hx_expanded[1, :, idx]
+
+        if single_inputs:
+            Hx = Hx_expanded.squeeze()
         return h, Hx
 
     return h
