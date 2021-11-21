@@ -66,6 +66,108 @@ def compute_dynamics(xvec, u, dt, compute_jacobians=True):
     return g, Gx, Gu
 
 
+def compute_dynamics_vectorized(xvec, u, dt, compute_jacobians=True):
+    """
+    Compute Turtlebot dynamics (unicycle model).
+
+    Inputs:
+                     xvec: np.array[3,N] - Turtlebot state (x, y, theta).
+                        u: np.array[2,N] - Turtlebot controls (V, omega).
+        compute_jacobians: bool         - compute Jacobians Gx, Gu if true.
+    Outputs:
+         g: np.array[3,N]  - New state after applying u for dt seconds.
+        Gx: np.array[3,3,N] - Jacobian of g with respect to xvec.
+        Gu: np.array[3,2,N] - Jacobian of g with respect to u.
+    """
+    ########## Code starts here ##########
+    # TODO: Compute g, Gx, Gu
+    # HINT: To compute the new state g, you will need to integrate the dynamics of x, y, theta
+    # HINT: Since theta is changing with time, try integrating x, y wrt d(theta) instead of dt by introducing om
+    # HINT: When abs(om) < EPSILON_OMEGA, assume that the theta stays approximately constant
+    #       ONLY for calculating the next x, y
+    #       New theta should not be equal to theta. Jacobian with respect to om is not 0.
+    N = u.shape(1)
+    V = u[0, :]
+    om = u[1, :]
+    theta_0 = xvec[2, :]
+    theta = xvec[2, :] + u[1, :] * dt
+
+    idx_large = om > EPSILON_OMEGA
+
+    # LARGE OM CASE
+    om_large = om[idx_large]
+    inv_om_large = 1 / om_large
+    v_om_ratio_large = V[idx_large] / om[idx_large]
+    theta_0_large = theta_0[idx_large]
+    theta_large = theta[idx_large]
+
+    s_theta_0_large = np.sin(theta_0_large)
+    c_theta_0_large = np.cos(theta_0_large)
+    s_theta_large = np.sin(theta_large)
+    c_theta_large = np.cos(theta_large)
+
+    x_large = xvec[0, idx_large] + v_om_ratio_large * (s_theta_large - s_theta_0_large)
+    y_large = xvec[1, idx_large] + v_om_ratio_large * (-c_theta_large + c_theta_0_large)
+
+    # SMALL OM CASE
+    idx_small = np.invert(idx_large)
+    theta_small = theta[idx_small]
+    theta_0_small = theta_0[idx_small]
+    s_theta_0_small = np.sin(theta_0_small)
+    c_theta_0_small = np.cos(theta_0_small)
+    v_small = V[idx_small]
+
+    x_small = xvec[0, idx_small] + v_small * c_theta_0_small * dt
+    y_small = xvec[1, idx_small] + v_small * s_theta_0_small * dt
+
+    # RECONSTRUCT THE VALUES
+    g = np.empty(3, N)
+    g[:, idx_large] = np.vstack([x_large, y_large, theta_large])
+    g[:, idx_small] = np.vstack([x_small, y_small, theta_small])
+
+    # Now the Jacobians, if needed
+    if compute_jacobians:
+        # LARGE CASE
+        Gx_large = np.array([[1, 0, v_om_ratio_large * (np.cos(theta_0_large + om_large * dt) - c_theta_0_large)],
+                             [0, 1, v_om_ratio_large * (np.sin(theta_0_large + om_large * dt) - s_theta_0_large)],
+                             [0, 0, 1]]
+                            )
+
+        Gu_large = np.array([[inv_om_large * (s_theta_large - s_theta_0_large),
+                              v_om_ratio_large *
+                              (dt * c_theta_large + inv_om_large * (s_theta_0_large - s_theta_large))],
+                             [inv_om_large * (c_theta_0_large - c_theta_large),
+                              v_om_ratio_large *
+                              (dt * s_theta_large + inv_om_large * (c_theta_large - c_theta_0_large))],
+                             [0, dt]])
+
+        # SMALL CASE
+        # lim (d/dt) = d/dt (lim )
+        Gx_small = np.array([[1, 0, - v_small * s_theta_0_small * dt],
+                             [0, 1, v_small * c_theta_0_small * dt],
+                             [0, 0, 1]]
+                            )
+
+        # lim (d/dt)
+        Gu_small = np.array([[c_theta_0_small * dt, -(1 / 2) * V * dt ** 2 * s_theta_0_small],
+                             [s_theta_0_small * dt, (1 / 2) * V * dt ** 2 * c_theta_0_small],
+                             [0, dt]])
+
+        # RECONSTRUCT
+        Gx = np.empty(3, 3, N)
+        Gx[:, :, idx_large] = Gx_large
+        Gx[:, :, idx_small] = Gx_small
+
+        Gu = np.empty(3, 2, N)
+        Gu[:, :, idx_large] = Gu_large
+        Gu[:, :, idx_small] = Gu_small
+        return g, Gx, Gu
+
+    ########## Code ends here ##########
+    return g
+
+
+
 def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian=True):
     """
     Given a single map line in the world frame, outputs the line parameters
