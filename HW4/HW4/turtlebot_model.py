@@ -196,6 +196,9 @@ def normalize_line_parameters(h, Hx=None):
     # alpha = h[0, :]
     # r = h[1, :]
     alpha, r = h
+    alpha = np.array(alpha)
+    r = np.array(r)
+    
     idx = r < 0
     alpha[idx] = alpha[idx] + np.pi
     alpha = (alpha + np.pi) % (2 * np.pi) - np.pi
