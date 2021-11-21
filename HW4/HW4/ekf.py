@@ -260,6 +260,7 @@ class EkfLocalization(Ekf):
             # TODO: Compute h, Hx using tb.transform_line_to_scanner_frame() for the j'th map line.
             # HINT: This should be a single line of code.
             line = self.map_lines[:, j]
+            print("line shape", line.shape)
             h, Hx = tb.transform_line_to_scanner_frame(line, self.x, self.tf_base_to_camera)
             print("h shape", h.shape)
             print("Hx shape", Hx.shape)
