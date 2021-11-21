@@ -207,11 +207,11 @@ class MonteCarloLocalization(ParticleFilter):
 
         # for i in range(self.M):
         #     g[i, :], Gx, Gu = tb.compute_dynamics(self.xs[i, :], us[i, :], dt, compute_jacobians=True)
-        g = tb.compute_dynamics_vectorized(self.xs, us, dt, compute_jacobians=False)
+        g = tb.compute_dynamics_vectorized(self.xs, us.T, dt, compute_jacobians=False)
 
         ########## Code ends here ##########
 
-        return g
+        return g.T
 
     def measurement_update(self, z_raw, Q_raw):
         """
