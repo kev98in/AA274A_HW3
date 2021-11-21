@@ -190,9 +190,9 @@ def normalize_line_parameters(h, Hx=None):
     alpha = (alpha + np.pi) % (2 * np.pi) - np.pi
     r[idx] = -r[idx]
     h = np.vstack([alpha, r])
-    print("h shape", h.shape)
-    print("alpha:", alpha)
-    print("r:", r)
+    # print("h shape", h.shape)
+    # print("alpha:", alpha)
+    # print("r:", r)
 
     if Hx is not None:
         Hx[1, :, idx] = - Hx[1, :, idx]
