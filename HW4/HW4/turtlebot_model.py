@@ -120,6 +120,11 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     # h = np.array([alpha_in_cam, r_in_cam])
     h = np.vstack([alpha_in_cam, r_in_cam])
 
+    print("h shape:", h.shape)
+    print("alpha in cam:", alpha_in_cam)
+    print("r_in_cam:", r_in_cam)
+
+
     # Third, get the Jacobian
     # partial h / x  = [ 0  (see below)]
     # partial h / y  = [ 0  (see below)]
