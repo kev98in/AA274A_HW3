@@ -363,21 +363,6 @@ class MonteCarloLocalization(ParticleFilter):
         J = self.map_lines.shape[1]
         hs = np.zeros((self.M,2,J))
 
-        def normalize_line_parameters_v(h, Hx):
-            """
-                h: [2, J] - normalized parameters
-            """
-            alpha = h[0,:]
-            r = h[1,:]
-            idx = r < 0
-            alpha[idx] = alpha[idx] + np.pi
-            alpha = (alpha + np.pi) % (2 * np.pi) - np.pi
-            r[idx] = -r[idx]
-            Hx[1,:,idx] = - Hx[1,:,idx]
-            h = np.vstack([alpha, r])
-
-            return h, Hx
-
         for i in range(self.M):
             h  = np.empty([2, J])
             Hx = np.empty([2, self.xs.shape[1], J])
@@ -391,7 +376,7 @@ class MonteCarloLocalization(ParticleFilter):
 
                 ########## Code ends here ##########
 
-            h, Hx = normalize_line_parameters_v(h, Hx)
+            h, Hx = tb.normalize_line_parameters(h, Hx)
             hs[i,:,:] = h
 
         ########## Code ends here ##########
