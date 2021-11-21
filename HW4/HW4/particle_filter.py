@@ -363,18 +363,36 @@ class MonteCarloLocalization(ParticleFilter):
         J = self.map_lines.shape[1]
         hs = np.zeros((self.M,2,J))
 
+        def normalize_line_parameters_v(h, Hx):
+            """
+                h: [2, J] - normalized parameters
+            """
+            alpha = h[0,:]
+            r = h[1,:]
+            idx = r < 0
+            alpha[idx] = alpha[idx] + np.pi
+            alpha = (alpha + np.pi) % (2 * np.pi) - np.pi
+            r[idx] = -r[idx]
+            Hx[1,:,idx] = - Hx[1,:,idx]
+            h = np.vstack([alpha, r]).T
+
+            return h, Hx
+
         for i in range(self.M):
-            for j in range(J):
+            h  = np.empty([2, J])
+            Hx = np.empty([2, self.xs.shape[1], J])
+
+            for j in range(J):  # loop over map lines
                 ########## Code starts here ##########
                 # TODO: Compute h, Hx using tb.transform_line_to_scanner_frame() for the j'th map line.
                 # HINT: This should be a single line of code.
                 line = self.map_lines[:, j]
-                h, Hx = tb.transform_line_to_scanner_frame(line, self.xs[i,:], self.tf_base_to_camera)
+                h[:,j], Hx[:,:,j] = tb.transform_line_to_scanner_frame(line, self.xs[i,:], self.tf_base_to_camera)
 
                 ########## Code ends here ##########
 
-                h, Hx = tb.normalize_line_parameters(h, Hx)
-                hs[i,:,j] = h
+            h, Hx = normalize_line_parameters_v(h, Hx)
+            hs[i,:,:] = h
 
         ########## Code ends here ##########
 
