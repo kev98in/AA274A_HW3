@@ -87,7 +87,7 @@ def compute_dynamics_vectorized(xvec, u, dt, compute_jacobians=True):
     #       ONLY for calculating the next x, y
     #       New theta should not be equal to theta. Jacobian with respect to om is not 0.
     print("u shape", u.shape)
-    N = u.shape(1)
+    N = u.shape[1]
     V = u[0, :]
     om = u[1, :]
     theta_0 = xvec[2, :]
