@@ -81,9 +81,10 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
          h: np.array[2,]  - line parameters in the scanner (camera) frame.
         Hx: np.array[2,3] - Jacobian of h with respect to x.
     """
+    single_inputs = (len(line.shape) == 1)
 
     # alpha, r = line
-    if len(line.shape) == 1:
+    if single_inputs:
         line_arr = np.expand_dims(line, axis=1)
     else:
         line_arr = line
@@ -122,8 +123,11 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
     angle_camera_w = np.arctan2(y_cam, x_cam)
 
     r_in_cam = r - np.linalg.norm(camera_xy_in_world) * np.cos(alpha - angle_camera_w)
-    # h = np.array([alpha_in_cam, r_in_cam])
-    h = np.vstack([alpha_in_cam, r_in_cam])
+
+    if single_inputs:
+        h = np.array([alpha_in_cam, r_in_cam])
+    else:
+        h = np.vstack([alpha_in_cam, r_in_cam])
 
     # print("h shape:", h.shape)
     # print("alpha in cam:", alpha_in_cam)
