@@ -82,7 +82,7 @@ def transform_line_to_scanner_frame(line, x, tf_base_to_camera, compute_jacobian
         Hx: np.array[2,3] - Jacobian of h with respect to x.
     """
     single_inputs = (len(line.shape) == 1)
-    print("Using single inputs? ", single_inputs)
+    # print("Using single inputs? ", single_inputs)
 
     # alpha, r = line
     if single_inputs:
@@ -194,7 +194,7 @@ def normalize_line_parameters(h, Hx=None):
     # return h
 
     single_inputs = (len(h.shape) == 1)
-    print("Using single inputs? ", single_inputs)
+    # print("Using single inputs? ", single_inputs)
 
     # alpha, r = line
     if single_inputs:
