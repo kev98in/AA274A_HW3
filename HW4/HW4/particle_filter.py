@@ -327,23 +327,33 @@ class MonteCarloLocalization(ParticleFilter):
         # We will use the computations to reduce (M, I, 2, J) to (M, I, 2)
         vijm = np.empty([self.M, I, 2, J])
 
-        for m in range(self.M):
-            # vij = np.empty([I, 2, J])
+        # Tiled version
+        z0_tiled = np.tile(z_raw[0, :, np.newaxis, np.newaxis], (1, self.M, J))
+        z1_tiled = np.tile(z_raw[1, :, np.newaxis, np.newaxis], (1, self.M, J))
+        hs0_tiled = np.tile(hs[np.newaxis, :, 0, :], (I, 1, 1))
+        hs1_tiled = np.tile(hs[np.newaxis, :, 1, :], (I, 1, 1))
 
-            for i in range(I):  # for each measurement
-                # dij = np.empty([J, ])
-                # vij = np.empty([2, J])
+        vijm[:, :, 0, :] = np.transpose(angle_diff(z0_tiled, hs0_tiled), (1, 0, 2))
+        vijm[:, :, 1, :] = np.transpose(z1_tiled - hs1_tiled, (1, 0, 2))
 
-                vijm[m, i, 0, :] = angle_diff(z_raw[0, i], hs[m, 0, :])
-                vijm[m, i, 1, :] = z_raw[1, i] - hs[m, 1, :]
-
-                # for j in range(J):  # for each line
-                #     # vij[0, j] = angle_diff(z_raw[0, i], hs[m, 0, j])
-                #     # vij[1, j] = z_raw[1, i] - hs[m, 1, j]
-                #     dij[j] = vij[:, j].T @ np.linalg.solve(Q_raw[i, :, :], vij[:, j])
-
-                # min_idx = np.argmin(dij)
-                # vs[m, i, :] = vij[i, :, min_idx]
+        # PRIOR CODE WITH FOR LOOPS, for reference!
+        # for m in range(self.M):
+        #     vij = np.empty([I, 2, J])
+        #
+        #     for i in range(I):  # for each measurement
+        #         dij = np.empty([J, ])
+        #         vij = np.empty([2, J])
+        #
+        #         vijm[m, i, 0, :] = angle_diff(z_raw[0, i], hs[m, 0, :])
+        #         vijm[m, i, 1, :] = z_raw[1, i] - hs[m, 1, :]
+        #
+        #         for j in range(J):  # for each line
+        #             # vij[0, j] = angle_diff(z_raw[0, i], hs[m, 0, j])
+        #             # vij[1, j] = z_raw[1, i] - hs[m, 1, j]
+        #             dij[j] = vij[:, j].T @ np.linalg.solve(Q_raw[i, :, :], vij[:, j])
+        #
+        #         min_idx = np.argmin(dij)
+        #         vs[m, i, :] = vij[i, :, min_idx]
 
         solve_pre = np.linalg.solve(Q_raw, vijm)
         dij = np.sum(vijm * solve_pre, axis=2)  # Sum over the columns of each
