@@ -328,11 +328,13 @@ class MonteCarloLocalization(ParticleFilter):
         vijm = np.empty([self.M, I, 2, J])
 
         # Tiled version
+        # I x M x J for every single one
         z0_tiled = np.tile(z_raw[0, :, np.newaxis, np.newaxis], (1, self.M, J))
         z1_tiled = np.tile(z_raw[1, :, np.newaxis, np.newaxis], (1, self.M, J))
         hs0_tiled = np.tile(hs[np.newaxis, :, 0, :], (I, 1, 1))
         hs1_tiled = np.tile(hs[np.newaxis, :, 1, :], (I, 1, 1))
 
+        # Change I x M x J to M x I x J
         vijm[:, :, 0, :] = np.transpose(angle_diff(z0_tiled, hs0_tiled), (1, 0, 2))
         vijm[:, :, 1, :] = np.transpose(z1_tiled - hs1_tiled, (1, 0, 2))
 
@@ -355,13 +357,15 @@ class MonteCarloLocalization(ParticleFilter):
         #         min_idx = np.argmin(dij)
         #         vs[m, i, :] = vij[i, :, min_idx]
 
+        # This is (I x 2 x 2)^{-1} @ (M x I x 2 x J) = M x I x 2 x J
         solve_pre = np.linalg.solve(Q_raw, vijm)
-        dij = np.sum(vijm * solve_pre, axis=2)  # Sum over the columns of each
-
+        # This is M x I x 2 x J inside to M x I x J after
+        dij = np.sum(vijm * solve_pre, axis=2)  # Sum over the columns of each to get the distance
+        # This selects on the last column, so M x I x J to M x I
         min_idx = np.argmin(dij, axis=2)  # argmin over the J
 
-        for m in range(self.M):
-            vs[m, :, :] = vijm[m, range(I), :, min_idx[m, :]]  # place the minidx for i at i
+        ii, mm = np.meshgrid(range(I), range(self.M))
+        vs[:, :, :] = vijm[mm, ii, :, min_idx[mm, ii]]
 
         # Reshape [M x I x 2] array to [M x 2I]
         return vs.reshape((self.M, -1))  # [M x 2I]
