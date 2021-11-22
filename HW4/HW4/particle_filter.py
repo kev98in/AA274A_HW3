@@ -324,27 +324,58 @@ class MonteCarloLocalization(ParticleFilter):
         hs = self.compute_predicted_measurements()
 
         for m in range(self.M):
-            vij = np.empty([2, J, I])
+            vij = np.empty([I, 2, J])
 
-            for i in range(I):   # for each measurement
+            # print("z_raw", z_raw.shape)
+            # print("hs", hs.shape)
+
+            # print("z_raw 1", z_raw[0, :].shape)
+            # print("hs 1", hs[m, 0, :].shape)
+
+            # hs_shifted = np.transpose(hs, (0, 2, 1))
+            # print("hs_shifted", hs_shifted.shape)
+            # print(z_raw[1, :] - hs_shifted[m, :, 1])
+
+            # vij[0, :, :] = angle_diff(z_raw[0, :], hs[m, 0, :])
+            # vij[1, :, :] = z_raw[1, :] - hs[m, 1, :]
+
+            for i in range(I):  # for each measurement
                 # dij = np.empty([J, ])
                 # vij = np.empty([2, J])
 
-                vij[0, :, i] = angle_diff(z_raw[0, i], hs[m, 0, :])
-                vij[1, :, i] = z_raw[1, i] - hs[m, 1, :]
+                vij[i, 0, :] = angle_diff(z_raw[0, i], hs[m, 0, :])
+                vij[i, 1, :] = z_raw[1, i] - hs[m, 1, :]
 
-                solve_pre = np.linalg.solve(Q_raw[i, :, :], vij[:, :, i])
-                dij = np.sum(vij[:, :, i] * solve_pre, axis=0)
+                # solve_pre = np.linalg.solve(Q_raw[i, :, :], vij[i, :, :])
+                # print("solve_pre", solve_pre.shape)
+                # dij = np.sum(vij[i, :, :] * solve_pre, axis=0)
+                # print("*", (vij[i, :, :] * solve_pre).shape)
+                # print("dij", dij.shape)
 
                 # for j in range(J):  # for each line
                 #     # vij[0, j] = angle_diff(z_raw[0, i], hs[m, 0, j])
                 #     # vij[1, j] = z_raw[1, i] - hs[m, 1, j]
                 #     dij[j] = vij[:, j].T @ np.linalg.solve(Q_raw[i, :, :], vij[:, j])
 
-                min_idx = np.argmin(dij)
-                vs[m, i, :] = vij[:, min_idx, i]
+                # min_idx = np.argmin(dij)
+                # vs[m, i, :] = vij[i, :, min_idx]
 
-        ########## Code ends here ##########
+            solve_pre = np.linalg.solve(Q_raw, vij)
+            # print("solve_pre", solve_pre.shape)
+            dij = np.sum(vij * solve_pre, axis=1)  # Sum over the columns of each
+            # print("*", (vij * solve_pre).shape)
+            # print("dij", dij.shape)
+
+            min_idx = np.argmin(dij, axis=1)  # argmin over the J
+            # print("min_idx", min_idx.shape)
+            # print("vs shape", vs.shape)
+            # print("vij_min shape", vij[range(I), :, min_idx].shape)
+            vs[m, :, :] = vij[range(I), :, min_idx]  # place the minidx for i at i
+
+            # for i in range(I):
+            #     vs[m, i, :] = vij[i, :, min_idx[i]]
+
+            # raise ValueError
 
         # Reshape [M x I x 2] array to [M x 2I]
         return vs.reshape((self.M, -1))  # [M x 2I]
