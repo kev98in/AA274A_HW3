@@ -325,7 +325,7 @@ class MonteCarloLocalization(ParticleFilter):
 
         for m in range(self.M):
             for i in range(I):   # for each measurement
-                # dij = np.empty([J, ])
+                dij = np.empty([J, ])
                 vij = np.empty([2, J])
 
                 vij[0, :] = angle_diff(z_raw[0, i], hs[m, 0, :])
