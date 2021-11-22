@@ -118,24 +118,37 @@ class ParticleFilter(object):
         # Hint: To maximize speed, try to implement the resampling algorithm
         #       without for loops. You may find np.linspace(), np.cumsum(), and
         #       np.searchsorted() useful. This results in a ~10x speedup.
-        
-        i = 0
-        c = ws[0]
-        
-        x = np.zeros((xs.shape))
-        w = np.zeros((ws.shape))
-        
-        for m in range(ws.size):
-            u = np.sum(ws)*(r+m/self.M)
-            while c < u:
-                i = i + 1
-                c = c + ws[i]
-            x[m,0:3] = xs[i,:]
-            w[m] = ws[i]
-#            w[m] = 1/self.M - not sure why this isn't right, the algorithm in the assignment tells us to do this
-            
-        self.xs = x
-        self.ws = w
+
+        ms = np.array(range(ws.size))
+        us = np.sum(ws) * (r + ms / self.M)
+
+        ws_cumulative = np.cumsum(ws)
+
+        # PRIOR CODE WITH FOR LOOPS, for reference!
+        # i = 0
+        # c = ws[0]
+        #
+        # x = np.zeros((xs.shape))
+        # w = np.zeros((ws.shape))
+        #
+        #         for m in ms:
+        #             # u = np.sum(ws)*(r+m/self.M)
+        #             u = us[m]
+        #
+        #             while c < u:
+        #                 i = i + 1
+        #                 c = c + ws[i]
+        #
+        #             ialt = np.argmax((ws_cumsum) > u)
+        #
+        #             x[m,0:3] = xs[i,:]
+        #             w[m] = ws[i]
+        # #            w[m] = 1/self.M
+
+        idxs = np.searchsorted(ws_cumulative, us)
+
+        self.xs = xs[idxs, :]
+        self.ws = ws[idxs]
 
         ########## Code ends here ##########
 
