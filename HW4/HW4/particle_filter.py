@@ -334,7 +334,7 @@ class MonteCarloLocalization(ParticleFilter):
                 print("qi", Q_raw[i, :, :].shape)
                 print("vij", vij.shape)
                 print("solve pre", solve_pre.shape)
-                dij = vij.T @ solve_pre
+                dij = np.sum(vij * solve_pre, axis=1)
                 print("dij shape", dij.shape)
                 print(dij)
 
