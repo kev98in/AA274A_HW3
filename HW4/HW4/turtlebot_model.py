@@ -86,14 +86,14 @@ def compute_dynamics_vectorized(xvec, u, dt, compute_jacobians=True):
     # HINT: When abs(om) < EPSILON_OMEGA, assume that the theta stays approximately constant
     #       ONLY for calculating the next x, y
     #       New theta should not be equal to theta. Jacobian with respect to om is not 0.
-    
+
     N = u.shape[0]
     V = u[:, 0]
     om = u[:, 1]
     theta_0 = xvec[:, 2]
     theta = theta_0 + om * dt
 
-    idx_large = om > EPSILON_OMEGA
+    idx_large = abs(om) > EPSILON_OMEGA
 
     # LARGE OM CASE
     om_large = om[idx_large]
