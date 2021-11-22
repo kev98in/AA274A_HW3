@@ -357,17 +357,15 @@ class MonteCarloLocalization(ParticleFilter):
         #         min_idx = np.argmin(dij)
         #         vs[m, i, :] = vij[i, :, min_idx]
 
-        # This is (I x 2 x 2)^{-1} @ (M x I x 2 x J) =
+        # This is (I x 2 x 2)^{-1} @ (M x I x 2 x J) = M x I x 2 x J
         solve_pre = np.linalg.solve(Q_raw, vijm)
-        print("solve_pre", solve_pre.shape)
-        print("vijm x solve_pre", (vijm * solve_pre).shape)
-        # This is M x I x J x J inside to M x I x J after
+        # This is M x I x 2 x J inside to M x I x J after
         dij = np.sum(vijm * solve_pre, axis=2)  # Sum over the columns of each to get the distance
-        # This selects on the last column, so M x I
+        # This selects on the last column, so M x I x J to M x I
         min_idx = np.argmin(dij, axis=2)  # argmin over the J
 
-        for m in range(self.M):
-            vs[m, :, :] = vijm[m, range(I), :, min_idx[m, :]]  # place the minidx for i at i
+        ii, mm = np.meshgrid(range(I), range(self.M))
+        vs[:, :, :] = vijm[mm, ii, :, min_idx[mm, ii]]
 
         # Reshape [M x I x 2] array to [M x 2I]
         return vs.reshape((self.M, -1))  # [M x 2I]
