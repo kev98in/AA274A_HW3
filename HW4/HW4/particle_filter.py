@@ -42,8 +42,8 @@ class ParticleFilter(object):
         """
         idx = self.ws == self.ws.max()
         x = np.zeros(self.xs.shape[1:])
-        x[:2] = self.xs[idx,:2].mean(axis=0)
-        th = self.xs[idx,2]
+        x[:2] = self.xs[idx, :2].mean(axis=0)
+        th = self.xs[idx, 2]
         x[2] = np.arctan2(np.sin(th).mean(), np.cos(th).mean())
         return x
 
@@ -208,10 +208,11 @@ class MonteCarloLocalization(ParticleFilter):
         # for i in range(self.M):
         #     g[i, :], Gx, Gu = tb.compute_dynamics(self.xs[i, :], us[i, :], dt, compute_jacobians=True)
         g = tb.compute_dynamics_vectorized(self.xs, us, dt, compute_jacobians=False)
+        assert g.shape == (self.M, 3)
 
         ########## Code ends here ##########
 
-        return g.T
+        return g
 
     def measurement_update(self, z_raw, Q_raw):
         """
