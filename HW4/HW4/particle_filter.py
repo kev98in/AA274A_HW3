@@ -324,7 +324,8 @@ class MonteCarloLocalization(ParticleFilter):
         hs = self.compute_predicted_measurements()
 
         # Start the vectorization
-        vijm = np.empty([I, 2, J, self.M])
+        # We will use the computations to reduce (M, I, 2, J) to (M, I, 2)
+        vijm = np.empty([self.M, I, 2, J])
 
         for m in range(self.M):
             # vij = np.empty([I, 2, J])
@@ -333,8 +334,8 @@ class MonteCarloLocalization(ParticleFilter):
                 # dij = np.empty([J, ])
                 # vij = np.empty([2, J])
 
-                vijm[i, 0, :, m] = angle_diff(z_raw[0, i], hs[m, 0, :])
-                vijm[i, 1, :, m] = z_raw[1, i] - hs[m, 1, :]
+                vijm[m, i, 0, :] = angle_diff(z_raw[0, i], hs[m, 0, :])
+                vijm[m, i, 1, :] = z_raw[1, i] - hs[m, 1, :]
 
                 # for j in range(J):  # for each line
                 #     # vij[0, j] = angle_diff(z_raw[0, i], hs[m, 0, j])
@@ -344,14 +345,13 @@ class MonteCarloLocalization(ParticleFilter):
                 # min_idx = np.argmin(dij)
                 # vs[m, i, :] = vij[i, :, min_idx]
 
-            solve_pre = np.linalg.solve(Q_raw, vijm[:, :, :, m])
-            # print("solve_pre", solve_pre.shape)
-            dij = np.sum(vijm[:, :, :, m] * solve_pre, axis=1)  # Sum over the columns of each
-            # print("*", (vij * solve_pre).shape)
-            # print("dij", dij.shape)
+        solve_pre = np.linalg.solve(Q_raw, vijm)
+        dij = np.sum(vijm * solve_pre, axis=2)  # Sum over the columns of each
 
-            min_idx = np.argmin(dij, axis=1)  # argmin over the J
-            vs[m, :, :] = vijm[range(I), :, min_idx, m]  # place the minidx for i at i
+        min_idx = np.argmin(dij, axis=2)  # argmin over the J
+
+        for m in range(self.M):
+            vs[m, :, :] = vijm[m, range(I), :, min_idx[m, :]]  # place the minidx for i at i
 
         # Reshape [M x I x 2] array to [M x 2I]
         return vs.reshape((self.M, -1))  # [M x 2I]
