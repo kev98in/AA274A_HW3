@@ -124,8 +124,8 @@ def compute_dynamics_vectorized(xvec, u, dt, compute_jacobians=True):
 
     # RECONSTRUCT THE VALUES
     g = np.empty((N, 3))
-    g[idx_large, :] = np.hstack([x_large, y_large, theta_large])
-    g[idx_small, :] = np.hstack([x_small, y_small, theta_small])
+    g[idx_large, :] = np.vstack([x_large, y_large, theta_large]).T
+    g[idx_small, :] = np.vstack([x_small, y_small, theta_small]).T
 
     # Now the Jacobians, if needed
     if compute_jacobians:
