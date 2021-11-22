@@ -323,23 +323,38 @@ class MonteCarloLocalization(ParticleFilter):
 
         hs = self.compute_predicted_measurements()
 
+        # Start the vectorization
+        # We will use the computations to reduce (M, I, 2, J) to (M, I, 2)
+        vijm = np.empty([self.M, I, 2, J])
+
         for m in range(self.M):
-            for i in range(I):   # for each measurement
-                dij = np.empty([J, ])
-                vij = np.empty([2, J])
+            # vij = np.empty([I, 2, J])
 
-                for j in range(J):  # for each line
-                    vij[0, j] = angle_diff(z_raw[0, i], hs[m, 0, j])
-                    vij[1, j] = z_raw[1, i] - hs[m, 1, j]
-                    dij[j] = vij[:, j].T @ np.linalg.solve(Q_raw[i, :, :], vij[:, j])
+            for i in range(I):  # for each measurement
+                # dij = np.empty([J, ])
+                # vij = np.empty([2, J])
 
-                min_idx = np.argmin(dij)
-                vs[m, i, :] = vij[:, min_idx]
+                vijm[m, i, 0, :] = angle_diff(z_raw[0, i], hs[m, 0, :])
+                vijm[m, i, 1, :] = z_raw[1, i] - hs[m, 1, :]
 
-        ########## Code ends here ##########
+                # for j in range(J):  # for each line
+                #     # vij[0, j] = angle_diff(z_raw[0, i], hs[m, 0, j])
+                #     # vij[1, j] = z_raw[1, i] - hs[m, 1, j]
+                #     dij[j] = vij[:, j].T @ np.linalg.solve(Q_raw[i, :, :], vij[:, j])
+
+                # min_idx = np.argmin(dij)
+                # vs[m, i, :] = vij[i, :, min_idx]
+
+        solve_pre = np.linalg.solve(Q_raw, vijm)
+        dij = np.sum(vijm * solve_pre, axis=2)  # Sum over the columns of each
+
+        min_idx = np.argmin(dij, axis=2)  # argmin over the J
+
+        for m in range(self.M):
+            vs[m, :, :] = vijm[m, range(I), :, min_idx[m, :]]  # place the minidx for i at i
 
         # Reshape [M x I x 2] array to [M x 2I]
-        return vs.reshape((self.M,-1))  # [M x 2I]
+        return vs.reshape((self.M, -1))  # [M x 2I]
 
     def compute_predicted_measurements(self):
         """
