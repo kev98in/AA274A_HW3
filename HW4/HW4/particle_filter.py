@@ -330,7 +330,11 @@ class MonteCarloLocalization(ParticleFilter):
 
                 vij[0, :] = angle_diff(z_raw[0, i], hs[m, 0, :])
                 vij[1, :] = z_raw[1, i] - hs[m, 1, :]
-                dij = vij.T @ np.linalg.solve(Q_raw[i, :, :], vij)
+                solve_pre = np.linalg.solve(Q_raw[i, :, :], vij)
+                print("qi", Q_raw[i, :, :].shape)
+                print("vij", vij.shape)
+                print("solve pre", solve_pre.shape)
+                dij = vij.T @ solve_pre
                 print("dij shape", dij.shape)
                 print(dij)
 
